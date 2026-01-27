@@ -28,7 +28,7 @@ public class Tnt : MonoBehaviour
     public static float ForcefieldTime = 0.0f;
     public const float UsualForcefieldTime = 4.0f;
     public static bool IsForcefield => ForcefieldTime > 0.0f;
-    public static int MaxTntMult = 2;
+    public static float MaxTntMult = 1;
     public static float NavMeshCheckRadius = 48.0f;
 
     // misc util stuff
@@ -76,8 +76,11 @@ public class Tnt : MonoBehaviour
             {
                 hasCheckedSteam = true;
                 if (AssetsController.IsSlopSafe)
-                    MaxTntMult *= 2;
+                    MaxTntMult *= 1.25f;
             }
+
+            if(MonoSingleton<PrefsManager>.Instance != null)
+                MaxTntMult += (MonoSingleton<PrefsManager>.Instance.GetInt("difficulty") + 1.0f) / 16.0f;
 
             ForcefieldTime = UsualForcefieldTime;
 
@@ -88,6 +91,9 @@ public class Tnt : MonoBehaviour
             foreach (var obj in objects)
                 if (obj != null && obj.CompareTag("Floor") && _getRootParent(obj.transform).name.ToLower() != "firstroom")
                     floors.Add(obj);
+
+            int tntCap = Mathf.FloorToInt((doors.Length * MaxTntMult) + (floors.Count * MaxTntMult));
+            float tntChance = (5.5f) / (tntCap * 0.0025f);
 
             int tntSpawned = 0;
 
@@ -105,7 +111,7 @@ public class Tnt : MonoBehaviour
             {
                 for (int i = 0; i < MaxTntMult; i++)
                 {
-                    if(Random.Range(0, 100) < 7.5 * MaxTntMult)
+                    if(Random.Range(0, 100) < tntChance * MaxTntMult)
                         searchPoints.Add(floor.transform.position);
                 }
             }
@@ -113,6 +119,9 @@ public class Tnt : MonoBehaviour
             int droppedTntCount = 0;
             foreach (var searchPoint in searchPoints)
             {
+                if(tntSpawned > tntCap)
+                    break;
+
                 if (_getRandomPointOnNavMesh(searchPoint, NavMeshCheckRadius, out var result))
                 {
                     var tnt = AssetsController.LoadAsset("TntRoot");

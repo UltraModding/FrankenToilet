@@ -61,7 +61,7 @@ public sealed class BarsController : MonoBehaviour
         boring = container.transform.Find("BoringPanel").GetComponentInChildren<Slider>(includeInactive:true);
 
         AdhdAmount = -1.0f;
-        BoringAmount = -1.0f;
+        BoringAmount = -0.125f;
 
         if (AssetsController.IsSlopSafe)
         {
@@ -83,7 +83,7 @@ public sealed class BarsController : MonoBehaviour
         if(NewMovement.Instance.dead || !gunPanel.activeInHierarchy || Time.timeSinceLevelLoad < 5.0f) // give the player some time to process whats goin on
         {
             AdhdAmount = -1.0f;
-            BoringAmount = -1.0f;
+            BoringAmount = -0.125f;
         }
 
         var deltaPos = (NewMovement.Instance.transform.position - lastPos).magnitude;
@@ -101,8 +101,8 @@ public sealed class BarsController : MonoBehaviour
             {
                 int max = StyleHUD.Instance.ranks.Count - 1;
                 int rank = StyleHUD.Instance.rankIndex;
-                if(rank > Mathf.Min(3, max))
-                    BoringAmount = 0.0f;
+                if(rank > Mathf.Min(3, max) && BoringAmount > 0)
+                    BoringAmount -= Time.deltaTime * BoringRate * (rank - 1);
             }
 
             boring.value = BoringAmount;
@@ -128,7 +128,7 @@ public sealed class BarsController : MonoBehaviour
         {
             DeltaruneExplosion.ExplodePlayer();
             AdhdAmount = -1.0f;
-            BoringAmount = -1.0f;
+            BoringAmount = -0.125f;
         }
 
         lastPos = NewMovement.Instance.transform.position;
@@ -169,7 +169,7 @@ public static class BarsInjector_Respawn
     public static void Prefix(NewMovement __instance)
     {
         BarsController.Instance!.AdhdAmount = -1.0f;
-        BarsController.Instance!.BoringAmount = -1.0f;
+        BarsController.Instance!.BoringAmount = -0.125f;
     }
 }
 

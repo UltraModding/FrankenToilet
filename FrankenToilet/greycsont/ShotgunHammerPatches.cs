@@ -18,13 +18,13 @@ public static class ShotgunHammerPatch
     public static IEnumerable<CodeInstruction> OnTriggerEnterTranspiler(
         IEnumerable<CodeInstruction> instructions)
     {
-        DirectionRa.Reset(); 
+        DirectionRandomizer.Reset(); 
         
         var negate = AccessTools.Method(typeof(Vector3), "op_UnaryNegation");
         
-        var random4 = AccessTools.Method(typeof(DirectionRa), nameof(DirectionRa.Randomize4Dir));
+        var random4 = AccessTools.Method(typeof(DirectionRandomizer), nameof(DirectionRandomizer.Randomize4Dir));
         
-        var randomReset = AccessTools.Method(typeof(DirectionRa), nameof(DirectionRa.Reset));
+        var randomReset = AccessTools.Method(typeof(DirectionRandomizer), nameof(DirectionRandomizer.Reset));
         
         var matcher = new CodeMatcher(instructions);
         

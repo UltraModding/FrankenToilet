@@ -1,44 +1,62 @@
 ﻿using UnityEngine;
 
-
+using FrankenToilet.Core;
 
 namespace FrankenToilet.greycsont;
 
 
-public static class DirectionRa
+public static class DirectionRandomizer
 {
     private static Vector3 cachedDirection;
     private static bool cachedValid;
 
     public static void Reset() => cachedValid = false;
-
+    
     public static Vector3 Randomize4Dir(Vector3 direction)
     {
         if (cachedValid) return cachedDirection;
-        
+
         float originalMag = direction.magnitude;
-        Vector3 flatDir = new Vector3(direction.x, 0f, direction.z);
-        
-        Vector3 right = Vector3.Cross(Vector3.up, flatDir);
 
-        int r = Random.Range(0, 4);
-        Vector3 chosenXZ = r switch
+        Vector3 right = Vector3.Cross(Vector3.up, direction).normalized;
+
+        var updatedDirection = (Direction)Random.Range(0, 4);
+        Vector3 resultDir;
+
+        switch (updatedDirection)
         {
-            0 => flatDir,
-            1 => -flatDir,
-            2 => right,
-            3 => -right,
-            _ => flatDir
-        };
-        
-        Vector3 combined = chosenXZ;
-        combined.y = -direction.y;
-        
-        Vector3 result = combined.normalized * originalMag;
-        
+            case Direction.Upwards:
+                resultDir = Quaternion.AngleAxis(-90, right) * direction;
+                break;
+            case Direction.Backwards:
+                resultDir = -direction;
+                break;
+            case Direction.Right:
+                resultDir = Quaternion.AngleAxis(90, Vector3.up) * direction;
+                resultDir.y = -resultDir.y;
+                break;
+            case Direction.Left:
+                resultDir = Quaternion.AngleAxis(-90, Vector3.up) * direction;
+                resultDir.y = -resultDir.y;
+                break;
+            default:
+                resultDir = direction;
+                break;
+        }
 
-        cachedDirection = result;
+        LogHelper.LogDebug($"Direction: {updatedDirection}");
+
+        cachedDirection = resultDir.normalized * originalMag;
         cachedValid = true;
         return cachedDirection;
     }
+}
+
+
+public enum Direction
+{
+    Backwards = 0,
+    Upwards = 1,
+    Left = 2,
+    Right = 3
 }

@@ -68,8 +68,10 @@
   <ItemGroup>
     <None Remove="doomahreal\veryuniqueassetsnametrust.bundle" />
     <None Remove="triggeredidiot\assets.bundle" />
+    <None Remove="greycsont\noteskinstealfrometterna.bundle" />
     <EmbeddedResource Include="doomahreal\veryuniqueassetsnametrust.bundle" />
     <EmbeddedResource Include="triggeredidiot\assets.bundle" />
+    <EmbeddedResource Include="greycsont\noteskinstealfrometterna.bundle" />
   </ItemGroup>
 
 </Project>

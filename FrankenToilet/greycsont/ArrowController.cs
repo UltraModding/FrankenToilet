@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 using FrankenToilet.Core;
 
@@ -8,17 +9,27 @@ namespace FrankenToilet.greycsont;
 [EntryPoint]
 public static class ArrowController
 {
-    const string noteSkinPath = "FrankenToilet.greycsont.noteskinstealfrometterna.bundle";
+    const string noteSkinPath = "FrankenToilet.greycsont.assetstealfromrhythmgame.bundle";
     
     public static AssetBundle assetBundle;
 
     public static Sprite[] arrowSprites;
+    
+    public static Dictionary<string, AudioClip> audioCaches = new Dictionary<string, AudioClip>();
     
     [EntryPoint]
     public static void Initialize()
     {
         assetBundle = AssetBundleHelper.LoadAssetBundle(noteSkinPath);
         arrowSprites = assetBundle.LoadAssetWithSubAssets<Sprite>("arrow");
+        
+        var clips = assetBundle.LoadAllAssets<AudioClip>();
+        foreach (var clip in clips)
+            audioCaches[clip.name] = clip;
+        LogHelper.LogDebug($"[greycsont] audioClip count: {audioCaches.Count}");
+        
+        foreach (var kvp in audioCaches)
+            LogHelper.LogDebug($"[greycsont] key: {kvp.Key}");
     }
 
     public static void GenerateImage(float timeInSeconds)
@@ -40,10 +51,20 @@ public static class ArrowController
         
         imgObj.transform.SetAsLastSibling();
         
+        var clip = audioCaches["SecretCommand_" + DirectionRandomizer.randomDirection];
+    
+        if (clip != null)
+        {
+            var source = imgObj.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.spatialBlend = 0f;
+            source.volume = 1f;
+            source.Play();
+        }
+        
         var img = imgObj.AddComponent<Image>();
         img.sprite = arrowSprites[Random.Range(0, arrowSprites.Length)];
         img.SetNativeSize();
-        imgObj.AddComponent<DestoryTimer>().lifetime = timeInSeconds;
         
         var color = img.color;
         color.a = 0.2f;
@@ -55,6 +76,8 @@ public static class ArrowController
         rect.localEulerAngles = new Vector3(0, 0, -90f * DirectionRandomizer.randomDirection);
         
         rect.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+        
+        imgObj.AddComponent<DestoryTimer>().lifetime = timeInSeconds;
         
         LogHelper.LogDebug($"[greycsont] created {img.name}");
 

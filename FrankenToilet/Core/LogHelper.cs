@@ -22,7 +22,7 @@ public static class LogHelper
     private static object TryAddPrefix(object message)
     {
         if (message is not string str) return message;
-        var stackFrame = new StackTrace().GetFrame(1); // 0 is this method, 1 is caller (Log), 2 is the original caller
+        var stackFrame = new StackTrace().GetFrame(2); // 0 is this method, 1 is caller (Log), 2 is the original caller
         var name = stackFrame.HasMethod()
                        ? stackFrame.GetMethod()
                                    .DeclaringType

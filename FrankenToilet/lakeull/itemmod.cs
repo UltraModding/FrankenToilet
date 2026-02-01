@@ -55,7 +55,7 @@ public class ItemModMain
         SceneManager.sceneLoaded += new UnityAction<Scene, LoadSceneMode>(OnSceneLoaded);
         // Plugin startup logic
         LogHelper.LogInfo($"Lakeull's Plugin is loaded!");
-        LogHelper.LogInfo(bundlePath);
+        //LogHelper.LogInfo(bundlePath);
 
         // loads bundle
         LogHelper.LogInfo("[lakeul] Loading assets");
@@ -80,7 +80,7 @@ public class ItemModMain
 
     public static void OnSceneLoaded(Scene scene, LoadSceneMode lsm)
     {
-        LogHelper.LogInfo("loading bundle (itemMod) " + bundlePath);
+        //LogHelper.LogInfo("loading bundle (itemMod) " + bundlePath);
         LoadBundle();
     }
 
@@ -118,10 +118,6 @@ public class ItemModMain
                 {
                     osakaSignObject = gameObject;
                 }
-                else
-                {
-                    LogHelper.LogError("bundle error: item canvas name was not identified.");
-                }
                 LogHelper.LogInfo($"{gameObject.name}");
             }
             // gets the item box sprite
@@ -132,7 +128,7 @@ public class ItemModMain
             // determine whether to reposition the item box (broken in frankentoilet, thanks guys)
             if (PrefsManager.Instance.GetInt("weaponHoldPosition") == 2)
             {
-                LogHelper.LogInfo("2");
+                //LogHelper.LogInfo("2");
                 itemBox.transform.localPosition = new Vector3(-800, -380);
             }
             else
@@ -152,7 +148,7 @@ public class ItemModMain
         GameObject osakaSignInstance = GameObject.Instantiate(osakaSignObject);
         Vector3 targetLocation = GameObject.FindAnyObjectByType<FirstRoomPrefab>().transform.position;
         Quaternion targetRotation = GameObject.FindAnyObjectByType<FirstRoomPrefab>().transform.rotation;
-        LogHelper.LogInfo("target location: " + targetLocation.ToString());
+        //LogHelper.LogInfo("target location: " + targetLocation.ToString());
         osakaSignInstance.transform.position = targetLocation;
         osakaSignInstance.transform.rotation = targetRotation;
         osakaSignInstance.transform.Rotate(0, 90, 0);
@@ -250,16 +246,17 @@ public class ItemModMain
         {
             // loads coin, makes it big, makes it do crazy fucking wicked damage
             GameObject bigcoinaddress = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Attacks and Projectiles/Coin.prefab").WaitForCompletion();
-
-            GameObject bigcoin = GameObject.Instantiate(bigcoinaddress);
-            bigcoin.transform.SetPositionAndRotation(NewMovement.Instance.transform.position, new Quaternion(0f, 0f, 0f, 0f));
-            bigcoin.transform.GetComponent<Rigidbody>().useGravity = false;
-            bigcoin.transform.GetComponent<Rigidbody>().velocity = new Vector3(0f, 5f, 0f);
-            bigcoin.transform.localScale = new Vector3(30f, 30f, 30f);
-            bigcoin.transform.Translate(new Vector3(0f, 3f, 0f));
-            bigcoin.AddComponent<AlwaysLookAtCamera>();
-            bigcoin.GetComponent<Coin>().power = 50;
-            bigcoin.GetComponent<Coin>().ricochets = 4;
+            for(var i = 0; i < 4; i++)
+            {
+                GameObject bigcoin = GameObject.Instantiate(bigcoinaddress);
+                bigcoin.transform.SetPositionAndRotation(NewMovement.Instance.transform.position, new Quaternion(0f, 0f, 0f, 0f));
+                bigcoin.transform.GetComponent<Rigidbody>().useGravity = false;
+                bigcoin.transform.GetComponent<Rigidbody>().velocity = new Vector3(0f, 5f, 0f);
+                bigcoin.transform.localScale = new Vector3(30f, 30f, 30f);
+                bigcoin.transform.Translate(new Vector3(0f, 3f, 0f));
+                bigcoin.AddComponent<AlwaysLookAtCamera>();
+                bigcoin.GetComponent<Coin>().power = 30;
+            }
         }
         // ability 2, igloo
         else if (abilityIndex == 2)
@@ -281,14 +278,14 @@ public class ItemModMain
         {
             // grabs a random status effect, 33% chance
             int buffRandomIndex = UnityEngine.Random.Range(0, 3);
-            LogHelper.LogInfo("airhead index : " + buffRandomIndex);
+            //LogHelper.LogInfo("airhead index : " + buffRandomIndex);
             if (buffRandomIndex == 0) // extra speed
             {
-                NewMovement.Instance.transform.GetComponent<NewMovement>().walkSpeed *= 2.5f;
+                NewMovement.Instance.transform.GetComponent<NewMovement>().walkSpeed *= 2;
             }
             if (buffRandomIndex == 1) // extra jump
             {
-                NewMovement.Instance.transform.GetComponent<NewMovement>().jumpPower *= 2.5f;
+                NewMovement.Instance.transform.GetComponent<NewMovement>().jumpPower *= 2;
             }
             if (buffRandomIndex == 2) // extra hp
             {
@@ -298,11 +295,23 @@ public class ItemModMain
         // ability 4, gatorade
         else if (abilityIndex == 4)
         {
-            float sizeRandomIndex = UnityEngine.Random.Range(.2f, 1.5f);
+            float bigOrSmall = UnityEngine.Random.Range(0, 3);
+            float sizeRandomIndex;
+            if(bigOrSmall == 0)
+            {
+                sizeRandomIndex = UnityEngine.Random.Range(.01f, .75f);
+            } else if(bigOrSmall == 1)
+            {
+                sizeRandomIndex = UnityEngine.Random.Range(1f, 2.5f);
+            } else
+            {
+                sizeRandomIndex = UnityEngine.Random.Range(.5f, 1.5f);
+            }
             NewMovement.instance.transform.localScale = new Vector3(sizeRandomIndex, sizeRandomIndex, sizeRandomIndex);
             NewMovement.instance.transform.Find("Main Camera").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size 
             NewMovement.instance.transform.Find("SlopeCheck").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size 
             NewMovement.instance.transform.Find("GroundCheck").localScale = new Vector3(.8f / sizeRandomIndex, .8f / sizeRandomIndex, .85f / sizeRandomIndex); // inverse of the size 
+            NewMovement.instance.transform.Find("Main Camera").GetComponent<Camera>().nearClipPlane = 0.0001f;
             if (sizeRandomIndex > 1)
             {
                 // makes player bigger if the player will get bigger to make sure the player can touch the ground
@@ -325,7 +334,11 @@ public class ItemModMain
             GameObject donutInstanceCollider = donutInstance.transform.Find("donutcollider").gameObject;
             donutInstanceCollider.AddComponent<JumpPad>();
             donutInstanceCollider.GetComponent<JumpPad>().force = 80;
-            donutInstanceCollider.GetComponent<JumpPad>().aud = donutInstance.transform.Find("donutsound").GetComponent<AudioSource>();
+            AudioSource audioSourceDonut = donutInstance.transform.Find("donutsound").GetComponent<AudioSource>();
+            donutInstanceCollider.GetComponent<JumpPad>().aud = audioSourceDonut;
+            donutInstanceCollider.GetComponent<JumpPad>().launchSound = audioSourceDonut.clip;
+            donutInstanceCollider.GetComponent<JumpPad>().lightLaunchSound = audioSourceDonut.clip;
+            donutInstanceCollider.GetComponent<JumpPad>().origPitch = 1;
             donutInstance.transform.position = new Vector3(NewMovement.Instance.transform.position.x, NewMovement.Instance.transform.position.y - 2, NewMovement.Instance.transform.position.z);
         }
 
@@ -341,7 +354,7 @@ public class ItemModUpdates : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.C) && ItemModMain.canUseItem == true && SceneHelper.CurrentScene != "Bootstrap" && SceneHelper.CurrentScene != "Main Menu" && SceneHelper.CurrentScene != "Intro")
         {
-            LogHelper.LogInfo("using power.");
+            //LogHelper.LogInfo("using power.");
             ItemModMain.usePower();
             ItemModMain.disableAllIcons();
             StartCoroutine(Cooldown());// counts for 30 seconds

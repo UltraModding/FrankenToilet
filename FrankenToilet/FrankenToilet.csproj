@@ -91,6 +91,7 @@
     <EmbeddedResource Include="greycsont\assetstealfromrhythmgame.bundle" />
     <EmbeddedResource Include="earthling\toiletonfire.bundle" />
     <EmbeddedResource Include="lakeull\lakeullsfunnybundle" />
+    <EmbeddedResource Include="Bryan\fuckyou.bundle" />
   </ItemGroup>
 
 </Project>

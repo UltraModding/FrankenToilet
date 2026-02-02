@@ -26,7 +26,7 @@ public static class BundleLoader
     public static AudioClip MinosDime;
 
     /// <summary> silly </summary>
-    public static Sprite UlraKil;
+    public static Sprite UlraKil, ulakill;
 
     /// <summary> Load the asset bundle. </summary>
     public static void Load()
@@ -38,6 +38,7 @@ public static class BundleLoader
         ComicSandsLegacy = assetBundle.LoadAsset<Font>("assets/comicsanslegacy.ttf");
         MinosDime = assetBundle.LoadAsset<AudioClip>("assets/minos prime.wav");
         UlraKil = assetBundle.LoadAsset<Sprite>("assets/ultrakill wingdings.png");
+        ulakill = assetBundle.LoadAsset<Sprite>("assets/title.png");
     }
 
     /// <summary> Grabs the embedded asset bundle. </summary>

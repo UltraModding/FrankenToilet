@@ -14,6 +14,7 @@ namespace FrankenToilet.prideunique;
 public static class AssetsController
 {
     private static AssetBundle _assets;
+    public static bool AssetsLoaded = false;
 
     // IsSlopTuber errored once so im paranoid now
     public static bool IsSlopSafe
@@ -31,7 +32,6 @@ public static class AssetsController
         }
     }
 
-    [EntryPoint]
     public static void Init()
     {
         LogInfo("Loading assets");
@@ -57,16 +57,32 @@ public static class AssetsController
             if (_assets != null) return;
 
             _assets = AssetBundle.LoadFromMemory(data);
+            AssetsLoaded = true;
             LogInfo("Loaded assets");
         };
     }
 
     public static GameObject? LoadAsset(string assetName)
     {
-        if (_assets == null) return null;
+        if (_assets == null) 
+            return null;
+        
         var go = _assets.LoadAsset<GameObject>(assetName);
         if (go == null) 
             return null;
+        
         return Object.Instantiate<GameObject>(go);
+    }
+
+    public static T? LoadAsset<T>(string assetName) where T : UnityEngine.Object
+    {
+        if (_assets == null)
+            return null;
+
+        var go = _assets.LoadAsset<T>(assetName);
+        if (go == null)
+            return null;
+
+        return Object.Instantiate<T>(go);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using static FrankenToilet.Core.LogHelper;
 
 namespace FrankenToilet.prideunique;
@@ -979,6 +980,32 @@ public static class SoundRandomizer
         try
         {
             var arType = assetReferenceInstance.GetType();
+
+            // ---- Addressables safety checks ----
+            var runtimeKeyProp = arType.GetProperty("RuntimeKey", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (runtimeKeyProp != null)
+            {
+                var key = runtimeKeyProp.GetValue(assetReferenceInstance);
+
+                if (key == null)
+                    return false;
+
+                if (key is string s && string.IsNullOrWhiteSpace(s))
+                    return false;
+
+                if (key is System.Collections.IEnumerable && !(key is string))
+                    return false;
+            }
+
+            var validMethod = arType.GetMethod("RuntimeKeyIsValid", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (validMethod != null)
+            {
+                bool ok = (bool)validMethod.Invoke(assetReferenceInstance, null);
+                if (!ok)
+                    return false;
+            }
+            // -----------------------------------
+
 
             // 1) If the AssetReference already exposes an OperationHandle, prefer using its Result
             var opProp = arType.GetProperty("OperationHandle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

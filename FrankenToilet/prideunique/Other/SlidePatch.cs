@@ -31,7 +31,7 @@ public static class SlidePatch
     [HarmonyPatch(nameof(NewMovement.Dodge))]
     private static void Prefix2(NewMovement __instance)
     {
-        if (SteamHelper.IsSlopTuber)
+        if (AssetsController.IsSlopSafe)
         {
             __instance.movementDirection2 *= 1.01f;
             __instance.dodgeDirection *= 1.01f;

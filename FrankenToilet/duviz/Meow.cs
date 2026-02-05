@@ -60,7 +60,6 @@ public class Meow : MonoBehaviour
         if (s == "5-4")
         {
             Destroy(GameObject.Find("Underwater").transform.Find("UnderwaterWater").gameObject);
-            yield return new WaitForSeconds(5);
             var objs = GameObject.FindObjectsOfType<GameObject>(true);
             foreach (var obj in objs)
             {

@@ -33,6 +33,7 @@
     <PackageReference Include="UltraModding.PluginInfoGenerator" Version="4.*"/>
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.28" IncludeAssets="compile"/>
     <PackageReference Include="MonoMod.Backports" Version="1.1.2" GeneratePathProperty="true" />
+    <PackageReference Include="MonoMod.ILHelpers" Version="1.1.0" GeneratePathProperty="true" />
     <PackageReference Include="Harmony.PatchExtensions" Version="1.0.0" GeneratePathProperty="true" />
   </ItemGroup>
 
@@ -101,12 +102,16 @@
     <ItemGroup>
       <HarmonyDll Include="$(PkgHarmony_PatchExtensions)/lib/netstandard2.1/Harmony.PatchExtensions.dll" />
       <MonoModDll Include="$(PkgMonoMod_Backports)/lib/netstandard2.1/MonoMod.Backports.dll" />
+      <MonoModIlDll Include="$(PkgMonoMod_ILHelpers)/lib/netstandard2.1/MonoMod.ILHelpers.dll" />
     </ItemGroup>
 
     <Copy SourceFiles="@(HarmonyDll)"
           DestinationFolder="$(OutputPath)"
           SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(MonoModDll)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(MonoModIlDll)"
           DestinationFolder="$(OutputPath)"
           SkipUnchangedFiles="true" />
   </Target>

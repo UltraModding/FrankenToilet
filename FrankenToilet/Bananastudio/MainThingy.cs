@@ -1,6 +1,7 @@
 ﻿using FrankenToilet.Bryan;
 using FrankenToilet.Core;
 using HarmonyLib;
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,20 +144,29 @@ public static class MainThingy
             timesGameOpened += 1;
             if (timesGameOpened == 1)
             {
-                AchievementManager.ExecuteAchievement("Biggest Mistake", "Play the game with Frankentoilet");
+                AchievementManager.ExecuteAchievement("Biggest Mistake", "Play the game with Frankentoilet",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/PITR Icons/Block Creator Wood.png");
                 if (SteamHelper.IsSlopTuber)
                 {
-                    AchievementManager.ExecuteAchievement("Hi youtube!", "Be a slop tuber");
+                    AchievementManager.ExecuteAchievement("Hi youtube!", "Be a slop tuber", "Assets/Textures/UI/Spawn Menu/Blue_Skull.png");
+                }
+                if(SteamClient.IsLoggedOn && SteamClient.SteamId == 76561199124864632L)
+                {
+                    AchievementManager.ExecuteAchievement("Heya Tondar", "Banana here :)",
+                        "Assets/Textures/UI/Spawn Menu/Sandbox/Hakita Icons/Melon.png");
                 }
             } else if(timesGameOpened == 5)
             {
-                AchievementManager.ExecuteAchievement("Stop playing", "Open the game 5 times");
+                AchievementManager.ExecuteAchievement("Stop playing", "Open the game 5 times",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/PITR Icons/Checkpoint Icon.png");
             } else if(timesGameOpened == 20)
             {
-                AchievementManager.ExecuteAchievement("STOPAH", ":(");
+                AchievementManager.ExecuteAchievement("STOPAH", ":(",
+                    "Assets/Textures/UI/Spawn Menu/Red_Skull.png");
             } else if(timesGameOpened == 1000)
             {
-                AchievementManager.ExecuteAchievement("Why?", "Why did you play this 1000 times");
+                AchievementManager.ExecuteAchievement("Why?", "Why did you play this 1000 times",
+                    "Assets/Textures/UI/Spawn Menu/Something_Wicked.png");
             }
             
             gameAlreadyOpened = true;
@@ -269,7 +279,8 @@ public static class MainThingy
                 firstDamage = false;
                 AchievementManager.ExecuteAchievement(
                     "First damage",
-                    "Deal damage for the first time."
+                    "Deal damage for the first time.",
+                    "Assets/Textures/UI/Spawn Menu/DualWield.png"
                 );
             }
 
@@ -300,7 +311,8 @@ public static class MainThingy
                 megaUnlocked = true;
                 AchievementManager.ExecuteAchievement(
                     "Mega damage",
-                    "Deal 100 damage to a single enemy within 0.25 seconds."
+                    "Deal 100 damage to a single enemy within 0.25 seconds.",
+                    "Assets/Textures/UI/Spawn Menu/Grenade.png"
                 );
             }
 
@@ -309,7 +321,8 @@ public static class MainThingy
                 ultraUnlocked = true;
                 AchievementManager.ExecuteAchievement(
                     "ULTRA damage",
-                    "Deal 1000 damage to a single enemy within 0.25 seconds."
+                    "Deal 1000 damage to a single enemy within 0.25 seconds.",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/Hakita Icons/Explosive Barrel.png"
                 );
             }
         }
@@ -328,43 +341,73 @@ public static class MainThingy
         static bool hasDashed = false;
         static bool hasFire1 = false;
         static bool hasFire2 = false;
+        static bool hasPaused = false;
 
         public static void Postfix(NewMovement __instance)
         {
             if (__instance.inman.InputSource.Move.ReadValue<Vector2>().magnitude > 0 && !hasMoved)
             {
-                AchievementManager.ExecuteAchievement("Baby steps", "Press a move key");
+                AchievementManager.ExecuteAchievement("Baby steps", "Press a move key",
+                    "Assets/Textures/UI/Spawn Menu/Filth.png");
                 hasMoved = true;
             }
 
             if (__instance.inman.InputSource.Jump.WasPerformedThisFrame && !hasJumped)
             {
-                AchievementManager.ExecuteAchievement("Up up and away!", "Press jump");
+                AchievementManager.ExecuteAchievement("Up up and away!", "Press jump",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/PITR Icons/Jump Pad.png");
                 hasJumped = true;
             }
 
             if (__instance.inman.InputSource.Slide.WasPerformedThisFrame && !hasSlid)
             {
-                AchievementManager.ExecuteAchievement("Slippery?", "Slide");
+                AchievementManager.ExecuteAchievement("Slippery?", "Slide",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/Hakita Icons/Procedural Water.png");
                 hasSlid = true;
             }
 
             if (__instance.inman.InputSource.Dodge.WasPerformedThisFrame && !hasDashed)
             {
-                AchievementManager.ExecuteAchievement("Dark Souls ahh movement", "Dash");
+                AchievementManager.ExecuteAchievement("Dark Souls ahh movement", "Dash",
+                    "Assets/Textures/UI/Spawn Menu/V2.png");
                 hasDashed = true;
             }
 
-            if (__instance.inman.InputSource.Dodge.WasPerformedThisFrame && !hasFire2)
+            if (__instance.inman.InputSource.Fire2.WasPerformedThisFrame && !hasFire2)
             {
-                AchievementManager.ExecuteAchievement("Cooler pew pew", "Alt fire your gun");
+                AchievementManager.ExecuteAchievement("Cooler pew pew", "Alt fire your gun",
+                    "Assets/Textures/UI/Spawn Menu/RedOrb.png");
                 hasFire2 = true;
             }
 
-            if (__instance.inman.InputSource.Dodge.WasPerformedThisFrame && !hasFire1)
+            if (__instance.inman.InputSource.Fire1.WasPerformedThisFrame && !hasFire1)
             {
-                AchievementManager.ExecuteAchievement("Pew pew", "Fire your gun");
+                AchievementManager.ExecuteAchievement("Pew pew", "Fire your gun",
+                    "Assets/Textures/UI/Spawn Menu/Drone.png");
                 hasFire1 = true;
+            }
+
+            if (__instance.inman.InputSource.Pause.WasPerformedThisFrame && !hasPaused)
+            {
+                AchievementManager.ExecuteAchievement("Short break?", "Pause the game",
+                    "Assets/Textures/UI/Spawn Menu/Sandbox/PITR Icons/Checkpoint Icon.png");
+                hasPaused = true;
+            }
+        }
+    }
+
+    [PatchOnEntry]
+    [HarmonyPatch(typeof(CheatsManager), nameof(CheatsManager.SetCheatActive))]
+    public static class SetCheatsActive
+    {
+        static bool alreadyCheated = false;
+        public static void Postfix()
+        {
+            if (!alreadyCheated)
+            {
+                alreadyCheated = true;
+                AchievementManager.ExecuteAchievement("Cheater", "Activate cheats",
+                    "Assets/Textures/UI/Spawn Menu/Soap.png");
             }
         }
     }
@@ -379,7 +422,8 @@ public static class MainThingy
             if (!respawnedAlready)
             {
                 respawnedAlready = true;
-                AchievementManager.ExecuteAchievement("Noob", "Die for the first time.");
+                AchievementManager.ExecuteAchievement("Noob", "Die for the first time.",
+                    "Assets/Textures/UI/Spawn Menu/Red_Altar.png");
             }
             VideoClip randomClip = ads[Random.Range(0, ads.Count)];
             if(frankenCanvas != null)
@@ -442,14 +486,28 @@ public static class MainThingy
     [HarmonyPatch(typeof(EnemyIdentifier), nameof(EnemyIdentifier.Death), new System.Type[] {typeof(bool)})]
     public static class ImplodeOnDeath
     {
+        static int enemiesKilled = 0;
         public static void Prefix(EnemyIdentifier __instance)
         {
             if (__instance.dead) return;
             DamageAchievements.damageWindows.Remove(__instance);
-            if (!hasKilledEnemy)
+            enemiesKilled++;
+            if (enemiesKilled == 1)
             {
-                hasKilledEnemy = true;
-                AchievementManager.ExecuteAchievement("First blood", "Kill your first enemy");
+                AchievementManager.ExecuteAchievement("First blood", "Kill your first enemy",
+                    "Assets/Textures/UI/Spawn Menu/Malicious_Face.png");
+            } else if (enemiesKilled == 5)
+            {
+                AchievementManager.ExecuteAchievement("Cool kill", "Kill 5 enemies",
+                    "Assets/Textures/UI/Spawn Menu/Swordsmachine.png");
+            } else if (enemiesKilled == 100)
+            {
+                AchievementManager.ExecuteAchievement("MEGAKILL", "Kill 100 enemies",
+                    "Assets/Textures/UI/Spawn Menu/Minos.png");
+            } else if (enemiesKilled == 10000)
+            {
+                AchievementManager.ExecuteAchievement("ULTRAKILL", "KILL 10000 ENEMIES",
+                    "Assets/Textures/UI/Spawn Menu/SisyphusPrime.png");
             }
             if (!enemysThatCanImplode.Contains(__instance.enemyType)) return;
             Material voidMat = bundle.LoadAsset<Material>("Void");
@@ -505,14 +563,15 @@ public static class MainThingy
             if(__instance.enemyType == EnemyType.MinosPrime && !minosSeenAlr)
             {
                 minosSeenAlr = true;
-                AchievementManager.ExecuteAchievement("Is that Minos Prime", "See Minos Prime");
+                AchievementManager.ExecuteAchievement("Is that Minos Prime", "See Minos Prime",
+                    "Assets/Textures/UI/Spawn Menu/MinosPrime.png");
                 
             }
 
             if ((__instance.GetComponent<BossHealthBar>() || __instance.isBoss)
                 && __instance.enemyType != EnemyType.MinosPrime)
             {
-                if (__instance.enemyType == EnemyType.Gabriel) return;
+                if (__instance.enemyType == EnemyType.Gabriel) return; 
                 if (__instance.enemyType == EnemyType.GabrielSecond) return; // allow doomahs whatsappriel to stay
 
                 System.Random rng = new System.Random(SceneHelper.CurrentScene.GetHashCode());
@@ -522,6 +581,7 @@ public static class MainThingy
 
                 GameObject minos = GameObject.Instantiate(MainThingy.LoadAddress<GameObject>("Assets/Prefabs/Enemies/MinosPrime.prefab"), __instance.transform.position,
                     __instance.transform.rotation);
+                minos.transform.parent = __instance.transform.parent;
                 minos.GetComponent<EnemyIdentifier>().isBoss = true;
                 minos.GetOrAddComponent<BossHealthBar>();
 

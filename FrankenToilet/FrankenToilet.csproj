@@ -89,11 +89,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Bananastudio\frankentoiletbundle" />
+    <None Remove="Bananastudio\gazimages" />
+    <None Remove="Bananastudio\videoclips" />
     <None Remove="doomahreal\veryuniqueassetsnametrust.bundle" />
     <None Remove="triggeredidiot\assets.bundle" />
     <None Remove="greycsont\assetstealfromrhythmgame.bundle" />
     <None Remove="earthling\toiletonfire.bundle" />
     <None Remove="lakeull\lakeullsfunnybundle" />
+    <EmbeddedResource Include="Bananastudio\frankentoiletbundle" />
+    <EmbeddedResource Include="Bananastudio\gazimages" />
+    <EmbeddedResource Include="Bananastudio\videoclips" />
     <None Remove="dolfelive\dolfe.bundle" />
     <None Remove="prideunique\aizoaizo" />
     <EmbeddedResource Include="doomahreal\veryuniqueassetsnametrust.bundle" />

@@ -1,9 +1,7 @@
 #pragma warning disable CS8618
-using FrankenToilet.Core;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 using UnityEngine.Video;
-using System.IO;
+using UnityObject = UnityEngine.Object;
 
 
 namespace FrankenToilet.somebilly {
@@ -13,11 +11,6 @@ namespace FrankenToilet.somebilly {
 
         // THIS IS THE TWO.
         public static void SpawnTwo() {
-            string videoPath = Path.Combine(Bib.GetCurrentAssemblyPath(), "2.mp4");
-            if (!File.Exists(videoPath)) {
-                LogHelper.LogError("2.mp4 not found");
-                return;
-            }
             float twoSpawnDistance = 300f;
             float twoSpawnHeight = 500f;
 
@@ -29,7 +22,7 @@ namespace FrankenToilet.somebilly {
             videoTexture.Create();
 
             VideoPlayer video = billboard.AddComponent<VideoPlayer>();
-            video.url = videoPath;
+            video.clip = Bib.Assets.LoadAsset<VideoClip>("Assets/Bib/2.mp4");
             video.targetTexture = videoTexture;
             video.isLooping = true;
             video.playOnAwake = true;
@@ -42,14 +35,14 @@ namespace FrankenToilet.somebilly {
 
             AlwaysLookAtCamera looker = billboard.AddComponent<AlwaysLookAtCamera>();
             looker.rotationOffset = new Vector3(180, 0, 180);
-            UnityObject.Destroy(billboard.GetComponent<MeshCollider>());
+            Destroy(billboard.GetComponent<MeshCollider>());
             billboard.transform.position = GetPointOnCircle(NewMovement.Instance.transform.position, Two.twoSpawnDistance, Two.twoSpawnHeight);
 
             billboard.AddComponent<TwoFaller>();
         }
 
         public static Vector3 GetPointOnCircle(Vector3 center, float radius, float heightOffset) {
-            float angleDeg = UnityEngine.Random.Range(0, 360);
+            float angleDeg = Random.Range(0, 360);
             float angleRad = angleDeg * Mathf.Deg2Rad;
             return new Vector3(
                 center.x + radius * Mathf.Cos(angleRad),
@@ -78,7 +71,7 @@ namespace FrankenToilet.somebilly {
         public float maxFallenDistance = 1500f;
 
         void Awake() {
-            speed = UnityEngine.Random.Range(30, 90);
+            speed = Random.Range(30, 90);
         }
 
         void Update() {
@@ -87,7 +80,7 @@ namespace FrankenToilet.somebilly {
             this.transform.position = new Vector3(pos.x, pos.y - fallDistance, pos.z);
             fallenDistance += fallDistance;
             if (fallenDistance >= maxFallenDistance) {
-                UnityObject.Destroy(this.gameObject);
+                Destroy(this.gameObject);
             }
         }
     }

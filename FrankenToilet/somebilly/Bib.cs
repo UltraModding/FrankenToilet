@@ -7,136 +7,55 @@ using System.Reflection;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace FrankenToilet.somebilly {
     // THIS IS THE BIB.
     public class Bib : MonoBehaviour {
         public static Bib Instance = null;
 
+        public static AssetBundle Assets;
         public static Texture2D ConfettiTexture;
         public static Dictionary<string, AudioClip> Voices = new Dictionary<string, AudioClip>();
-
-        public static string GetCurrentAssemblyPath() {
-            string dllPath = Assembly.GetExecutingAssembly().Location;
-            return Path.GetDirectoryName(dllPath);
-        }
-
-
-        public static Texture2D LoadEmbeddedTexture(string resourceName) {
+        
+        public static AssetBundle LoadBundle(string resourceName) {
             Assembly assembly = Assembly.GetExecutingAssembly();
             using Stream stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null) {
                 LogHelper.LogError($"Embedded resource '{resourceName}' not found");
                 return null;
             }
-
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, buffer.Length);
-
-            Texture2D tex = new Texture2D(2, 2);
-            if (tex.LoadImage(buffer)) {
-                return tex;
-            } else {
-                LogHelper.LogError("Failed to load embedded texture");
-                return null;
-            }
+            
+            var resourceStream = assembly.GetManifestResourceStream(resourceName);
+            return AssetBundle.LoadFromStream(resourceStream);
         }
 
-        public void ObtainVoice(string path) {
-            StartCoroutine(LoadAudioFromFile(path));
+        public void ObtainVoicesFromAssetsFolder(string folderPath)
+        {
+            foreach (var path in Assets.GetAllAssetNames().Where(static p => p.StartsWith("Assets/Bib/Voices")))
+                RegisterVoice(path);
         }
 
-        public static IEnumerator LoadAudioFromFile(string path) {
-            string fullPath = Path.Combine(Paths.PluginPath, "FrankenToilet/" + path);
-            string url = "file://" + fullPath.Replace("\\", "/");
+        public static void RegisterVoice(string path) {
+            int idx = path.LastIndexOf('/');
 
-            using (var request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.OGGVORBIS)) {
-                yield return request.SendWebRequest();
-                AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-                string clipName = path.Split("/")[^1].Split(".")[0];
-                clip.name = clipName;
-                Bib.Voices[clipName] = clip;
-            }
+            if (idx == -1)
+                return;
+            string clipName = path[(idx + 1)..].Split(".")[0];
+            AudioClip clip = Assets.LoadAsset<AudioClip>(path);
+            clip.name = clipName;
+            Voices[clipName] = clip;
         }
 
         public void Start() {
             MegaAss();
         }
 
-        public void MegaAss() {
-            ConfettiTexture = LoadEmbeddedTexture("FrankenToilet.somebilly.CONFETTI.png");
-            ObtainVoice("ENEMY_VOICE/CONFETTI_SOUND.ogg");
-
-            // MACHINES
-            ObtainVoice("ENEMY_VOICE/V1.ogg");
-            ObtainVoice("ENEMY_VOICE/SWORDSMACHINE.ogg");
-            ObtainVoice("ENEMY_VOICE/SWORDSMACHINE_AGONY.ogg");
-            ObtainVoice("ENEMY_VOICE/SWORDSMACHINE_TUNDRA.ogg");
-            ObtainVoice("ENEMY_VOICE/DRONE.ogg");
-            ObtainVoice("ENEMY_VOICE/STREETCLEANER.ogg");
-            ObtainVoice("ENEMY_VOICE/V2.ogg");
-            ObtainVoice("ENEMY_VOICE/V2_2.ogg");
-            ObtainVoice("ENEMY_VOICE/MINDFLAYER.ogg");
-            ObtainVoice("ENEMY_VOICE/MINDFLAYER_IDOLED.ogg");
-            ObtainVoice("ENEMY_VOICE/SENTRY.ogg");
-            ObtainVoice("ENEMY_VOICE/GUTTERMAN.ogg");
-            ObtainVoice("ENEMY_VOICE/GUTTERTANK.ogg");
-            ObtainVoice("ENEMY_VOICE/LANDMINE.ogg");
-            ObtainVoice("ENEMY_VOICE/EARTHMOVER.ogg");
-            ObtainVoice("ENEMY_VOICE/EARTHMOVER_BRAIN.ogg");
-            ObtainVoice("ENEMY_VOICE/ROCKET_LAUNCHER.ogg");
-            ObtainVoice("ENEMY_VOICE/MORTAR.ogg");
-            ObtainVoice("ENEMY_VOICE/TOWER.ogg");
-
-            // HUSKS
-            ObtainVoice("ENEMY_VOICE/FILTH.ogg");
-            ObtainVoice("ENEMY_VOICE/STRAY.ogg");
-            ObtainVoice("ENEMY_VOICE/SCHISM.ogg");
-            ObtainVoice("ENEMY_VOICE/SOLDIER.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOS_CORPSE.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOS_CORPSE_HAND.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOS_CORPSE_LONG.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOS_CORPSE_PARASITE.ogg");
-            ObtainVoice("ENEMY_VOICE/STALKER.ogg");
-            ObtainVoice("ENEMY_VOICE/SISYPHEAN_INSURRECTIONIST.ogg");
-            ObtainVoice("ENEMY_VOICE/SISYPHEAN_INSURRECTIONIST_ANGRY.ogg");
-            ObtainVoice("ENEMY_VOICE/SISYPHEAN_INSURRECTIONIST_RUDE.ogg");
-            ObtainVoice("ENEMY_VOICE/FERRYMAN.ogg");
-
-            // DEMONS
-            ObtainVoice("ENEMY_VOICE/MALICIOUS_FACE.ogg");
-            ObtainVoice("ENEMY_VOICE/CERBERUS.ogg");
-            ObtainVoice("ENEMY_VOICE/CERBERUS_BIG.ogg");
-            ObtainVoice("ENEMY_VOICE/HIDEOUS_MASS.ogg");
-            ObtainVoice("ENEMY_VOICE/IDOL.ogg");
-            ObtainVoice("ENEMY_VOICE/LEVIATHAN_5-3.ogg");
-            ObtainVoice("ENEMY_VOICE/LEVIATHAN_INTRO.ogg");
-            ObtainVoice("ENEMY_VOICE/LEVIATHAN.ogg");
-            ObtainVoice("ENEMY_VOICE/MANNEQUIN.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOTAUR.ogg");
-
-            // ANGELS
-            ObtainVoice("ENEMY_VOICE/GABRIEL.ogg");
-            ObtainVoice("ENEMY_VOICE/GAGABRIEL.ogg");
-            ObtainVoice("ENEMY_VOICE/VIRTUE.ogg");
-
-            // OTHER
-            ObtainVoice("ENEMY_VOICE/SOMETHING_WICKED.ogg");
-            ObtainVoice("ENEMY_VOICE/CANCEROUS_RODENT.ogg");
-            ObtainVoice("ENEMY_VOICE/VERY_CANCEROUS_RODENT.ogg");
-            ObtainVoice("ENEMY_VOICE/MYSTERIOUS_DRUID_KNIGHT_AND_OWL.ogg");
-            ObtainVoice("ENEMY_VOICE/BIG_JOHNINATOR.ogg");
-            ObtainVoice("ENEMY_VOICE/FLESH_PRISON.ogg");
-            ObtainVoice("ENEMY_VOICE/MINOS_PRIME.ogg");
-            ObtainVoice("ENEMY_VOICE/FLESH_PANOPTICON.ogg");
-            ObtainVoice("ENEMY_VOICE/SISYPHUS_PRIME.ogg");
-            ObtainVoice("ENEMY_VOICE/EYE.ogg");
-            ObtainVoice("ENEMY_VOICE/BIG_EYE.ogg");
-            ObtainVoice("ENEMY_VOICE/MINI_MAURICE.ogg");
-            ObtainVoice("ENEMY_VOICE/PUPPET.ogg");
-            ObtainVoice("ENEMY_VOICE/MIRAGE.ogg");
-            ObtainVoice("ENEMY_VOICE/GIANNI_MATRAGRANO.ogg");
+        public void MegaAss()
+        {
+            Assets = LoadBundle("FrankenToilet.somebilly.assets.bundle");
+            ConfettiTexture = Assets.LoadAsset<Texture2D>("Assets/Bib/CONFETTI.png");
+            ObtainVoicesFromAssetsFolder("Assets/Bib/Voices");
         }
 
         // minotaur is added twice because

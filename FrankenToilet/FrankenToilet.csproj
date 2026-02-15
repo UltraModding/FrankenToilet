@@ -118,6 +118,7 @@
     <EmbeddedResource Include="prideunique\aizoaizo" />
     <EmbeddedResource Include="BlaixenU\assetblaixundle" />
     <EmbeddedResource Include="flazhik\ultrakill_sa.bundle" />
+    <EmbeddedResource Include="somebilly\assets.bundle" />
   </ItemGroup>
 
   <Target Name="CopyHarmonyExtensionDeps" AfterTargets="Build">

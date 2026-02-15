@@ -25,8 +25,8 @@ public class UltrakillSanAndreas
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        if (scene != SceneManager.GetActiveScene()
-         || SceneHelper.CurrentScene.IsOneOf("Bootstrap", "Main Menu", "Intro"))
+        if (SceneHelper.CurrentScene == null || scene != SceneManager.GetActiveScene() 
+                                             || SceneHelper.CurrentScene.IsOneOf("Bootstrap", "Main Menu", "Intro"))
             return;
 
         SetupCanvas();

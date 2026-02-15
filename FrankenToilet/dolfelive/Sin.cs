@@ -68,6 +68,13 @@ public sealed class Sin : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _audioSource.volume = PrefsManager.Instance.GetFloat("allVolume");
 
+        AudioSource[] audioChildren = transform.Find("AudioSources").GetComponents<AudioSource>();
+        foreach (AudioSource child in audioChildren)
+        {
+            child.maxDistance *= 1.2f;
+            child.volume = PrefsManager.Instance.GetFloat("allVolume");
+        }
+
         StartCoroutine(playSounds());
         StartCoroutine(SpawnCircles());
     }

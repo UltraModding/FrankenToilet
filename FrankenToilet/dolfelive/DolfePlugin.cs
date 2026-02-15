@@ -56,13 +56,6 @@ public class DolfePlugin
             sin.zenRelease = bundle.LoadAsset<AudioClip>("Assets/Sin/ZenRelease.wav");
             sin.actionsNBanger = bundle.LoadAsset<AudioClip>("Assets/Sin/ACTION_&_CONSEQUENCE_-_Grace_OST.mp3");
             
-            AudioSource[] audioChildren = sin.transform.Find("AudioSources").GetComponents<AudioSource>();
-            foreach (AudioSource child in audioChildren)
-            {
-                child.maxDistance *= 1.2f;
-                child.volume = PrefsManager.Instance.GetFloat("allVolume");
-            }
-            
             // overlayMaterial = bundle.LoadAsset<Material>("Assets/Sin/SinAngy/SurfaceBroken.mat");
         }
         PrepareSin();

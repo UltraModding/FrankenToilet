@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Collections.Generic;
-using FrankenToilet.Core;
 
 namespace FrankenToilet.earthling;
 
@@ -11,7 +10,7 @@ public static class FishProvider
     private static Dictionary<string, FishObject> fishes = new Dictionary<string, FishObject>();
     private static System.Random rand = new System.Random();
 
-    public static void LoadFishes() 
+    public static void LoadFishes()
     {
         string[] fishPaths = {
             "Assets/Data/Fishing/Fishes/Funny Stupid Fish.asset", // Funny Stupid Fish (Friend)
@@ -28,7 +27,7 @@ public static class FishProvider
             "Assets/Data/Fishing/Fishes/Shark.asset", // Shark
         };
 
-        foreach (string fishPath in fishPaths) 
+        foreach (string fishPath in fishPaths)
         {
             FishObject fish = Addressables.LoadAssetAsync<FishObject>(fishPath).WaitForCompletion();
             fishes.Add(fish.fishName, fish);
@@ -56,7 +55,7 @@ public static class FishProvider
         return fishes.Values.ToArray();
     }
 
-    public static ItemIdentifier CreateFishPickup(FishObject fish) 
+    public static ItemIdentifier CreateFishPickup(FishObject fish)
     {
         ItemIdentifier itemIdentifier;
 

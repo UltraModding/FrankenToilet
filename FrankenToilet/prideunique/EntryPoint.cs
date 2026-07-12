@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using FrankenToilet.Core;
+﻿using FrankenToilet.Core;
 using UnityEngine.SceneManagement;
 using static FrankenToilet.Core.LogHelper;
 
@@ -17,7 +16,7 @@ public static class EntryPoint
 
         SceneManager.sceneLoaded += (scene, lcm) =>
         {
-            if (SceneHelper.CurrentScene == "Intro")
+            if (SceneHelper.LastScene == "Bootstrap")
             {
                 AudioClipsAddressableLoader.LoadSoundAndMusicAddressables();
             }

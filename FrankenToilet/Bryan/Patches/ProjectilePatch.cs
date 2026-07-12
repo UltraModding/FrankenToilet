@@ -2,17 +2,15 @@
 
 using FrankenToilet.Core;
 using HarmonyLib;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 
-[PatchOnEntry]
-[HarmonyPatch(typeof(Projectile))]
+[PatchOnEntry] [HarmonyPatch(typeof(Projectile))]
 public static class ProjectilePatch
 {
     /// <summary> Add a projectile fucker to the projectile and that will handle all the fancy shit </summary>
-    [HarmonyPrefix]
-    [HarmonyPatch("Awake")]
-    public static void meow(Projectile __instance) => 
-        __instance.gameObject.AddComponent<ProjectileFucker>();
+    [HarmonyPrefix] [HarmonyPatch("Start")]
+    public static void meow(Projectile __instance)
+    {
+        if (__instance.GetComponent<ProjectileFucker>() == null) // check if it already has a ProjecttileFucker
+            __instance.gameObject.AddComponent<ProjectileFucker>(); // since this will make it constantly create more projectiles when it dupes itself
+    }
 }

@@ -8,7 +8,7 @@ namespace FrankenToilet.earthling;
 public static class DontPlayThisMod
 {
     [EntryPoint]
-    public static void ChangePlayButtonText() 
+    public static void ChangePlayButtonText()
     {
         SceneManager.sceneLoaded += (scene, lcm) => {
             if (SceneHelper.CurrentScene == "Main Menu")

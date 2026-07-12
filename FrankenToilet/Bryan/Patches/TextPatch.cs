@@ -3,20 +3,17 @@
 using FrankenToilet.Core;
 using HarmonyLib;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary> Patch textMeshProUGUI components (text components) to make them funky. </summary>
-[PatchOnEntry]
-[HarmonyPatch(typeof(TextMeshProUGUI))]
+[PatchOnEntry] [HarmonyPatch(typeof(TextMeshProUGUI))]
 public static class TextMeshProUGUIPatch
 {
     /// <summary> Replace font with sand + fucker </summary>
-    [HarmonyPrefix]
-    [HarmonyPatch("Awake")] [HarmonyPatch("OnEnable")]
+    [HarmonyPrefix] [HarmonyPatch("Awake")] [HarmonyPatch("OnEnable")]
     public static void ChangeFontAndFUck(TextMeshProUGUI __instance)
     { 
-        __instance.font = BundleLoader.ComicSands ?? __instance.font;
+        __instance.font = Assets.ComicSands ?? __instance.font;
         
         if (__instance.gameObject.GetComponent<TextFucker>() == null)
             __instance.gameObject.AddComponent<TextFucker>();
@@ -24,18 +21,16 @@ public static class TextMeshProUGUIPatch
 }
 
 /// <summary> Patch Text components (legacy text components) to make them funky. </summary>
-[PatchOnEntry]
-[HarmonyPatch(typeof(Text))]
+[PatchOnEntry] [HarmonyPatch(typeof(Text))]
 public static class LegacyTextPatch
 {
     /// <summary> Replace font with sand + fuck them </summary>
-    [HarmonyPrefix]
-    [HarmonyPatch("OnEnable")]
+    [HarmonyPrefix] [HarmonyPatch("OnEnable")]
     public static void ChangeFontAndFuck(Text __instance)
     {
-        __instance.font = BundleLoader.ComicSandsLegacy ?? __instance.font;
+        __instance.font = Assets.L_ComicSands ?? __instance.font;
 
-        if (__instance.gameObject.GetComponent<TextFucker>() == null) 
+        if (__instance.gameObject.GetComponent<TextFucker>() == null)
             __instance.gameObject.AddComponent<TextFucker>();
     }
 }

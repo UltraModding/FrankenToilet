@@ -1,13 +1,9 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using FrankenToilet;
-using FrankenToilet.Core;
+﻿using FrankenToilet.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Unity;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -91,7 +87,7 @@ public class ItemModMain
             canUseItem = false;
             // i stole this from earthling
             // it loads embed bundles i think
-            
+
             // load bundle, find the item canvas
             packedObjects = bundle.LoadAllAssets<GameObject>();
             foreach (GameObject gameObject in packedObjects)
@@ -203,7 +199,7 @@ public class ItemModMain
             ability.AddComponent<HudOpenEffect>();
         }
     }
-        
+
     public static void RandomizePower()
     {
         // define random
@@ -311,9 +307,9 @@ public class ItemModMain
                 sizeRandomIndex = UnityEngine.Random.Range(.5f, 1.5f);
             }
             NewMovement.instance.transform.localScale = new Vector3(sizeRandomIndex, sizeRandomIndex, sizeRandomIndex);
-            NewMovement.instance.transform.Find("Main Camera").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size 
-            NewMovement.instance.transform.Find("SlopeCheck").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size 
-            NewMovement.instance.transform.Find("GroundCheck").localScale = new Vector3(.8f / sizeRandomIndex, .8f / sizeRandomIndex, .85f / sizeRandomIndex); // inverse of the size 
+            NewMovement.instance.transform.Find("Main Camera").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size
+            NewMovement.instance.transform.Find("SlopeCheck").localScale = new Vector3(1 / sizeRandomIndex, 1 / sizeRandomIndex, 1 / sizeRandomIndex); // inverse of the size
+            NewMovement.instance.transform.Find("GroundCheck").localScale = new Vector3(.8f / sizeRandomIndex, .8f / sizeRandomIndex, .85f / sizeRandomIndex); // inverse of the size
             NewMovement.instance.transform.Find("Main Camera").GetComponent<Camera>().nearClipPlane = 0.0001f;
             NewMovement.instance.transform.Find("Main Camera").GetComponent<Camera>().farClipPlane = 10000f;
             if (sizeRandomIndex > 1)

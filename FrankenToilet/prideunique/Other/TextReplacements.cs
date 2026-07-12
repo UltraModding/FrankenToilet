@@ -1,19 +1,12 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using FrankenToilet.Core;
+﻿using FrankenToilet.Core;
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace FrankenToilet.prideunique;
 

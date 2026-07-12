@@ -1,10 +1,7 @@
-﻿using FrankenToilet.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using static FrankenToilet.Core.LogHelper;
 
 namespace FrankenToilet.prideunique;
 

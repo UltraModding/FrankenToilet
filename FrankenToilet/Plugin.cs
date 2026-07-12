@@ -21,6 +21,7 @@ public sealed class Plugin : BaseUnityPlugin
 
     private void Awake()
     {
+        
         Logger = base.Logger;
         InputSystem.RegisterProcessor<ScaleVector2DeltaTimeProcessor>();
         LogInfo("Welcome to Frankenstein's Toilet...");
@@ -28,7 +29,8 @@ public sealed class Plugin : BaseUnityPlugin
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         var entryPointMethods = new List<MethodInfo>();
         var mixinClasses = new List<Type>();
-        
+        TogglePatchHelper TPH = new();
+        //TPH.Init();
         foreach (var type in typeof(Plugin).Assembly
                                            .GetTypes()
                                            .Where(static type => DevModeInfo.CURRENT_DEV_NAMESPACE == null

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
-using FrankenToilet.Core; // For MonoSingleton
+
+// For MonoSingleton
 
 public class LmsCountdown : MonoBehaviour
 {

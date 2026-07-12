@@ -1,9 +1,7 @@
 ﻿using FrankenToilet.Core;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -64,13 +62,13 @@ public static class AssetsController
 
     public static GameObject? LoadAsset(string assetName)
     {
-        if (_assets == null) 
+        if (_assets == null)
             return null;
-        
+
         var go = _assets.LoadAsset<GameObject>(assetName);
-        if (go == null) 
+        if (go == null)
             return null;
-        
+
         return Object.Instantiate<GameObject>(go);
     }
 

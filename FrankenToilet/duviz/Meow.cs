@@ -182,7 +182,7 @@ public class Meow : MonoBehaviour
         var root = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (var obj in root)
         {
-            if (!obj.activeSelf && !includeActive) continue; 
+            if (!obj.activeSelf && !includeActive) continue;
             if (obj.name == "Player" || obj.name == "Canvas") continue;
             ReplaceMaterials(obj.transform, Bundle.bundle.LoadAsset<Material>("404"));
         }

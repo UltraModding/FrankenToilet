@@ -20,7 +20,7 @@ public sealed class DolfeCountdown : MonoBehaviour
     public float flashDuration = 0.1f;
     public bool countingDown = false;
     public bool _sinSpawned = false;
-    
+
     private List<TextMeshProUGUI> _charTexts = new List<TextMeshProUGUI>();
     private string _lastStr = "";
     private float _pulseTimer = 0f;
@@ -28,14 +28,15 @@ public sealed class DolfeCountdown : MonoBehaviour
     private float _randomTime = 90f;
     private AudioSource _audioSource = null!;
     private bool _audioPaused = false;
-    
+
     private void Start()
     {
         _randomTime = Random.Range(60f, 900f);
         _audioSource = gameObject.AddComponent<AudioSource>();
         _audioSource.clip = timeRunOutClip;
+        _audioSource.volume = PrefsManager.Instance.GetFloat("allVolume");
     }
-    
+
     void RemakeStr(string newStr)
     {
         if (newStr.Length != _lastStr.Length)
@@ -43,23 +44,23 @@ public sealed class DolfeCountdown : MonoBehaviour
             foreach (var txt in _charTexts)
                 Destroy(txt.gameObject);
             _charTexts.Clear();
-            
+
             float totalWidth = (newStr.Length - 1) * charSpacing;
             float startX = -totalWidth ;
             Vector3 localPosition = this.gameObject.transform.localPosition;
             localPosition.x = startX;
             this.gameObject.transform.localPosition = localPosition;
-            
+
             for (int i = 0; i < newStr.Length; i++)
             {
                 var newText = Instantiate(textPrefab, container, false);
                 _charTexts.Add(newText);
             }
-            
+
             _lastStr = newStr;
         }
     }
-    
+
     void RainbowCountdown()
     {
         _rainbowTimer += Time.deltaTime;
@@ -70,23 +71,23 @@ public sealed class DolfeCountdown : MonoBehaviour
         float currentTime = baseTime + Mathf.Sin(Time.time * speed) * amplitude;
         TimeSpan t = TimeSpan.FromSeconds(currentTime);
         string displayStr = $"{(int)t.TotalMinutes:00}:{t.Seconds:00}.{t.Milliseconds / 10:00}";
-        
+
         RemakeStr(displayStr);
-        
+
         for (int i = 0; i < displayStr.Length; i++)
         {
             float movementOffset = (_rainbowTimer * 0.3f) % 1f;
             float hueOffset = (movementOffset + (float)i / displayStr.Length) % 1f;
             Color color = Color.HSVToRGB(hueOffset, 1f, 1f);
             string colorTag = $"color=#{color.ToHexString()}";
-        
+
             float wobbleAmount = Mathf.Sin(_rainbowTimer * 2f + i * 0.5f) * 3f;
-        
+
             _charTexts[i].text = MapToAtlas(displayStr[i], colorTag);
             _charTexts[i].rectTransform.anchoredPosition = new Vector2(i * charSpacing + wobbleAmount, 0);
         }
     }
-    
+
     void Update()
     {
         if (!countingDown)
@@ -94,7 +95,7 @@ public sealed class DolfeCountdown : MonoBehaviour
             RainbowCountdown();
             return;
         }
-        
+
         if (!_sinSpawned)
         {
             timeLeft -= Time.deltaTime;
@@ -108,7 +109,7 @@ public sealed class DolfeCountdown : MonoBehaviour
                 _audioSource.Play();
                 _audioPaused = false;
             }
-            
+
             if (Time.deltaTime == 0)
             {
                 _audioSource.Pause();
@@ -120,14 +121,14 @@ public sealed class DolfeCountdown : MonoBehaviour
             }
         }
         timeLeft = Mathf.Clamp(timeLeft, 0f, float.MaxValue);
-        
+
         int minutes = (int)(timeLeft / 60);
         float seconds = timeLeft - minutes * 60;
 
         string unmappedStr = $"{minutes:00}:{seconds:00.00}";
 
         RemakeStr(unmappedStr);
-        
+
         float normalizedTime = timeLeft > 10 ? 1f : (timeLeft / 10f);
         float pulseInterval = Mathf.Lerp(minPulseInterval, maxPulseInterval, normalizedTime);
         float currentShake = Mathf.Lerp(maxShakeAmount, minShakeAmount, normalizedTime);
@@ -167,13 +168,13 @@ public sealed class DolfeCountdown : MonoBehaviour
                 return "ERROR";
         }
     }
-    
+
     public void StartTimer()
     {
         if (_audioPaused)
             _audioSource.UnPause();
     }
-    
+
     public void StopTimer()
     {
         if (_audioSource.isPlaying)

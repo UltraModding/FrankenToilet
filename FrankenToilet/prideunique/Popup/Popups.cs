@@ -1,22 +1,16 @@
-﻿using FrankenToilet.Bryan.Patches;
-using FrankenToilet.Core;
+﻿using FrankenToilet.Bryan;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using static UnityEngine.GraphicsBuffer;
 
 namespace FrankenToilet.prideunique;
 public static class Popups
 {
     public static GameObject MainPrefab;
     public static List<VideoClip> VideoClips = new List<VideoClip>();
-    
+
     public static RenderTexture BaseRenderTexture;
     public static Dictionary<GameObject, RenderTexture> RenderTextures = new Dictionary<GameObject, RenderTexture>();
 
@@ -30,7 +24,7 @@ public static class Popups
         if (!CameraController.Instance || !OptionsMenuToManager.Instance)
             return;
 
-        PopupCloser.Instance.Awake();
+        _ = PopupCloser.Instance;
 
         MainPrefab = AssetsController.LoadAsset<GameObject>("assets/aizoaizo/popup.prefab");
         GameObject videoPlayer = MainPrefab.GetComponentInChildren<VideoPlayer>().gameObject;
@@ -65,7 +59,7 @@ public static class Popups
                 SpawnPopup(VideoClips[0]);
                 SpawnPopup(VideoClips[1]);
                 SpawnPopup(VideoClips[2]);
-                
+
                 yield return new WaitForSeconds(((float)VideoClips[0].length) * 3);
             }
             else
@@ -90,7 +84,7 @@ public static class Popups
 
         VideoPlayer videoPlayer = go.GetComponentInChildren<VideoPlayer>();
         videoPlayer.targetTexture = renderTexture;
-        
+
         RawImage rawImage = go.GetComponentInChildren<RawImage>();
         rawImage.rectTransform.sizeDelta = new Vector2(videoClip.width, videoClip.height);
         rawImage.texture = renderTexture;
@@ -105,7 +99,7 @@ public static class Popups
 
         videoPlayer.Prepare();
 
-        videoPlayer.prepareCompleted += (vp) => 
+        videoPlayer.prepareCompleted += (vp) =>
         {
             Vector3 dir = Random.onUnitSphere;
             Vector3 pos = dir.normalized * RandomForMe.Next(384f, 512f);
@@ -113,7 +107,7 @@ public static class Popups
             Follow f = go.gameObject.AddComponent<Follow>();
             f.target = CameraController.Instance.transform;
             f.mimicPosition = true;
-             
+
             go.transform.GetChild(0).position = pos;
 
             var co = go.transform.GetChild(0).gameObject.AddComponent<AlwaysLookAtCamera>();

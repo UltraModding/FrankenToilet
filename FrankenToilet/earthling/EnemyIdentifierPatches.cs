@@ -17,7 +17,9 @@ public class EnemyIdentifierPatches
         string texture1 = "Assets/Bundles/toiletonfire/filthmouthopen.png";
         string texture2 = "Assets/Bundles/toiletonfire/filthmouthclosed.png";
 
-        Renderer renderer = __instance.transform.Find("ZombieFilth/Melee_Husk/").GetComponent<Renderer>();
+        Renderer renderer = __instance.transform.Find(
+                "RotationTransform (PortalOffset)/BodyCenterRotation (PortalOffset)/ZombieFilth/Melee_Husk/"
+            ).GetComponent<Renderer>(); // if it works it works
         ZombieMelee zm = __instance.gameObject.GetComponent<ZombieMelee>();
 
         renderer.material.mainTexture = AssetBundleHelper.LoadAsset<Texture2D>(texture1);
@@ -28,7 +30,7 @@ public class EnemyIdentifierPatches
 
     [HarmonyPrefix]
     [HarmonyPatch("Death", new Type[]{typeof(bool)})]
-    public static void SpawnFishOnDeath(EnemyIdentifier __instance) 
+    public static void SpawnFishOnDeath(EnemyIdentifier __instance)
     {
         if (__instance.dead) return;
 

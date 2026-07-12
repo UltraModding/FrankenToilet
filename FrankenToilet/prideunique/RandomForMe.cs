@@ -1,8 +1,6 @@
 ﻿using FrankenToilet.Core;
 using Steamworks;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FrankenToilet.prideunique;
 

@@ -1,0 +1,70 @@
+ManifestFileVersion: 0
+CRC: 917949172
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: a6b2c196ffef4e4aeebc680b2d8e0048
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 40afa3e9d8461411859f18a20e5c7e06
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: a6b2c196ffef4e4aeebc680b2d8e0048
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: aa42871b277be54a45d67492a6c6ca46, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 241
+  Script: {instanceID: 0}
+- Class: 243
+  Script: {instanceID: 0}
+- Class: 245
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.ArgumentCache
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentListenerMode
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.AnimationTriggers
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.Button/ButtonClickedEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.ColorBlock
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.Navigation
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.SpriteState
+Assets:
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup1.prefab
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup3.prefab
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup3.png
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup2.png
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup1.png
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/popup2.prefab
+- Assets/BlaixenU/Mods/My Glorious Contributions To FrankenToilet/517719__zovipoland__popup-up.wav
+Dependencies: []

@@ -1,10 +1,6 @@
 ﻿using FrankenToilet.Core;
 using HarmonyLib;
-using System;
-using System.Xml.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace FrankenToilet.doomahreal.patches;
 

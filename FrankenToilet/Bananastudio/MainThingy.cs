@@ -1,5 +1,4 @@
-﻿using FrankenToilet.Bryan;
-using FrankenToilet.Core;
+﻿using FrankenToilet.Core;
 using HarmonyLib;
 using Steamworks;
 using System.Collections;
@@ -175,7 +174,7 @@ public static class MainThingy
                 AchievementManager.ExecuteAchievement("Why?", "Why did you play this 1000 times",
                     "Assets/Textures/UI/Spawn Menu/Something_Wicked.png");
             }
-            
+
             gameAlreadyOpened = true;
         }
     }
@@ -231,7 +230,7 @@ public static class MainThingy
             }, "Player Damage"),
             new Buff(false, (amount) =>
             {
-                
+
                 Physics.gravity *= amount;
             }, "Gravity"),
         };
@@ -570,7 +569,7 @@ public static class MainThingy
                 skipButton.onClick.RemoveAllListeners();
                 __instance.StartCoroutine(activateSkip(skipButton));
                 plr.Play();
-                
+
             }
         }
 
@@ -696,13 +695,13 @@ public static class MainThingy
                 minosSeenAlr = true;
                 AchievementManager.ExecuteAchievement("Is that Minos Prime", "See Minos Prime",
                     "Assets/Textures/UI/Spawn Menu/MinosPrime.png");
-                
+
             }
 
             if ((__instance.GetComponent<BossHealthBar>() || __instance.isBoss)
                 && __instance.enemyType != EnemyType.MinosPrime)
             {
-                if (__instance.enemyType == EnemyType.Gabriel) return; 
+                if (__instance.enemyType == EnemyType.Gabriel) return;
                 if (__instance.enemyType == EnemyType.GabrielSecond) return; // allow doomahs whatsappriel to stay
 
                 System.Random rng = new System.Random(SceneHelper.CurrentScene.GetHashCode());

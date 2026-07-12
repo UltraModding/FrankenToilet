@@ -42,7 +42,7 @@ public static class AssetBundleHelper
             LogHelper.LogInfo("[earthling on fire] Loaded assets");
             FishProvider.LoadFishes();
         }
-        else 
+        else
         {
             LogHelper.LogError("[earthling on fire] Error loading bundle");
         }

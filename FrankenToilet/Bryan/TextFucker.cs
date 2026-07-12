@@ -34,7 +34,7 @@ public class TextFucker : MonoBehaviour
     public void LateUpdate()
     {
         Color col = Femboy.fuckText ? Color.HSVToRGB(Mathf.LerpUnclamped(0f, 0.2f, Time.realtimeSinceStartup % 5), 1f, 1f) : preColor;
-        
+
         Text?.color = col;
         Legacy?.color = col;
     }

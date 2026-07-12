@@ -41,8 +41,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="UnityEngine.Modules" Version="2022.3.29" IncludeAssets="compile" />
     <PackageReference Include="UltraModding.PluginInfoGenerator" Version="4.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2022.3.29" IncludeAssets="compile" />
     <PackageReference Include="MonoMod.Backports" Version="1.1.2" GeneratePathProperty="true" />
     <PackageReference Include="MonoMod.ILHelpers" Version="1.1.0" GeneratePathProperty="true" />
     <PackageReference Include="Harmony.PatchExtensions" Version="1.1.0" GeneratePathProperty="true" />
@@ -111,5 +111,3 @@
     <Copy SourceFiles="@(MonoModILHelpersDll)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
 </Project>
-
-

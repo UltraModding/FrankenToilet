@@ -1,8 +1,4 @@
-﻿using FrankenToilet.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace FrankenToilet.prideunique;
@@ -13,14 +9,13 @@ public class TurnDarkOverTime : MonoSingleton<TurnDarkOverTime>
     public bool CreatedCanvas = false;
     private RawImage rawImage;
 
-    public float fadeDuration = 60f * 60f; //1min(60s) * 60 = 1 hour 
+    public float fadeDuration = 60f * 60f; //1min(60s) * 60 = 1 hour
     public float maxAlpha = 0.5f;   // highest alpha allowed
     private float elapsed = 0f;
     private bool fading = false;
 
-    public override void Awake()
+    public void Awake()
     {
-        base.Awake();
         gameObject.hideFlags = HideFlags.HideAndDontSave;
     }
 
@@ -32,11 +27,13 @@ public class TurnDarkOverTime : MonoSingleton<TurnDarkOverTime>
             {
                 CreatedCanvas = true;
 
-                GameObject go = AssetsController.LoadAsset<GameObject>("assets/aizoaizo/darkovertime.prefab");
-                go.hideFlags = HideFlags.HideAndDontSave;
-
+                GameObject go = Object.Instantiate(AssetsController.LoadAsset<GameObject>("assets/aizoaizo/darkovertime.prefab"));
+                Object.DontDestroyOnLoad(go);
                 if (!go)
                     return;
+                
+                var canvas = go.GetComponentInChildren<Canvas>();
+                canvas.sortingOrder = 1114; // The "LOADING" screen's sorting order is 1000
 
                 rawImage = go.GetComponentInChildren<RawImage>();
                 if (!rawImage)
@@ -70,7 +67,7 @@ public class TurnDarkOverTime : MonoSingleton<TurnDarkOverTime>
                 float a = Mathf.Lerp(0f, maxAlpha, t);
                 SetAlpha(a);
 
-                if (t >= 1f) 
+                if (t >= 1f)
                     fading = false;
             }
         }

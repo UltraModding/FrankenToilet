@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 namespace FrankenToilet.Bananastudio;
 
@@ -47,7 +46,7 @@ public class Implosion : MonoBehaviour
         if (t >= 3 && !imploded)
         {
             imploded = true;
-            GameObject part = Instantiate(MainThingy.LoadAddress<GameObject>("Assets/Particles/BlackHoleExplosion.prefab"), 
+            GameObject part = Instantiate(MainThingy.LoadAddress<GameObject>("Assets/Particles/BlackHoleExplosion.prefab"),
                 transform.position, Quaternion.identity);
             part.transform.localScale = Vector3.one * size;
             Implode();

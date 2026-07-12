@@ -1,8 +1,5 @@
 ﻿using FrankenToilet.Core;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace FrankenToilet.prideunique;
@@ -33,12 +30,12 @@ public static class SlidePatch
     {
         if (AssetsController.IsSlopSafe)
         {
-            __instance.movementDirection2 *= 1.01f;
+            __instance.targetVel *= 1.01f;
             __instance.dodgeDirection *= 1.01f;
         }
         else
         {
-            __instance.movementDirection2 *= 1.005f;
+            __instance.targetVel *= 1.005f;
             __instance.dodgeDirection *= 1.005f;
         }
     }

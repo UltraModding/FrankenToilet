@@ -29,10 +29,10 @@ public static class WeaponIconPatches
             case WeaponVariant.RedVariant:
                 newDescriptor.variationColor = WeaponVariant.BlueVariant;
                 break;
-            case WeaponVariant.BlueVariant: 
+            case WeaponVariant.BlueVariant:
                 newDescriptor.variationColor = WeaponVariant.GreenVariant;
                 break;
-            case WeaponVariant.GreenVariant: 
+            case WeaponVariant.GreenVariant:
                 newDescriptor.variationColor = WeaponVariant.RedVariant;
                 break;
             default:

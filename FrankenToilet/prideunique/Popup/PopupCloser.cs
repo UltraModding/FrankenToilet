@@ -1,7 +1,4 @@
-﻿using FrankenToilet.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,6 +7,7 @@ namespace FrankenToilet.prideunique;
 [ConfigureSingleton(SingletonFlags.DestroyDuplicates | SingletonFlags.PersistAutoInstance)]
 public class PopupCloser : MonoSingleton<PopupCloser>
 {
+    public void Awake() {}
     public void Update()
     {
         if (!InputManager.Instance.InputSource.Fire1.WasPerformedThisFrame)
@@ -23,7 +21,7 @@ public class PopupCloser : MonoSingleton<PopupCloser>
 
         if (results.Count <= 0)
             return;
-        
+
         foreach(var result in results)
         {
             if (result.gameObject == null)

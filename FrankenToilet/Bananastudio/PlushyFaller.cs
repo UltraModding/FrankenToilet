@@ -1,13 +1,11 @@
 ﻿using FrankenToilet.Core;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace FrankenToilet.Bananastudio;
 
 public class PlushyFaller : MonoBehaviour
 {
-    
+
 
     float t;
     float delayBetweenFalling = 3;

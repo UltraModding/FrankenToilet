@@ -1,10 +1,7 @@
 ﻿using FrankenToilet.Core;
 using HarmonyLib;
-using System;
-using System.Xml.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace FrankenToilet.doomahreal.patches;
 
@@ -25,7 +22,7 @@ public static class Startlevelpatch
         var bundle = IMLOADINGITSOHARDDDD.thegrundle;
         GameObject? prefab = bundle.LoadAsset<GameObject>("Assets/Custom/imfrakeninmykill/evilscary/round start canvas/EvilScary 1.prefab");
 
-        // evil scary could spawn camp you so delete chaser 
+        // evil scary could spawn camp you so delete chaser
 
         if (Chaser.Instance != null)
             Object.Destroy(Chaser.Instance.gameObject);

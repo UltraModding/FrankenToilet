@@ -24,14 +24,25 @@
   <Import Project="Properties/DeployToPlugins.targets" />
   <Import Project="Properties/DevMode.targets" />
   <ItemGroup>
+    <Compile Remove="Core\EventsManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="alma\assets.bundle" />
+    <None Remove="alma\scenes.bundle" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="alma\assets.bundle" />
+    <EmbeddedResource Include="alma\scenes.bundle" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="UltraModding.PluginInfoGenerator" Version="4.*"/>
-    <PackageReference Include="UnityEngine.Modules" Version="2022.3.29" IncludeAssets="compile"/>
+    <PackageReference Include="UnityEngine.Modules" Version="2022.3.29" IncludeAssets="compile" />
+    <PackageReference Include="UltraModding.PluginInfoGenerator" Version="4.*" />
     <PackageReference Include="MonoMod.Backports" Version="1.1.2" GeneratePathProperty="true" />
     <PackageReference Include="MonoMod.ILHelpers" Version="1.1.0" GeneratePathProperty="true" />
     <PackageReference Include="Harmony.PatchExtensions" Version="1.1.0" GeneratePathProperty="true" />
@@ -88,36 +99,6 @@
     <Publicize Include="Assembly-CSharp" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="alma\assets.bundle" />
-    <None Remove="alma\scenes.bundle" />
-    <None Remove="Bananastudio\frankentoiletbundle" />
-    <None Remove="Bananastudio\gazimages" />
-    <None Remove="Bananastudio\videoclips" />
-    <None Remove="doomahreal\veryuniqueassetsnametrust.bundle" />
-    <None Remove="dolfelive\dolfe.bundle" />
-    <None Remove="triggeredidiot\assets.bundle" />
-    <None Remove="greycsont\assetstealfromrhythmgame.bundle" />
-    <None Remove="earthling\toiletonfire.bundle" />
-    <None Remove="lakeull\lakeullsfunnybundle" />
-    <None Remove="prideunique\aizoaizo" />
-    <EmbeddedResource Include="alma\assets.bundle" />
-    <EmbeddedResource Include="alma\scenes.bundle" />
-    <EmbeddedResource Include="Bananastudio\frankentoiletbundle" />
-    <EmbeddedResource Include="Bananastudio\gazimages" />
-    <EmbeddedResource Include="Bananastudio\videoclips" />
-    <EmbeddedResource Include="doomahreal\veryuniqueassetsnametrust.bundle" />
-    <EmbeddedResource Include="duviz\meow.bundle" />
-    <EmbeddedResource Include="triggeredidiot\assets.bundle" />
-    <EmbeddedResource Include="greycsont\assetstealfromrhythmgame.bundle" />
-    <EmbeddedResource Include="earthling\toiletonfire.bundle" />
-    <EmbeddedResource Include="lakeull\lakeullsfunnybundle" />
-    <EmbeddedResource Include="Bryan\fuckyou.bundle" />
-    <EmbeddedResource Include="somebilly\CONFETTI.png" />
-    <EmbeddedResource Include="dolfelive\dolfe.bundle" />
-    <EmbeddedResource Include="prideunique\aizoaizo" />
-  </ItemGroup>
-
   <Target Name="CopyHarmonyExtensionDeps" AfterTargets="Build">
     <ItemGroup>
       <HarmonyDll Include="$(PkgHarmony_PatchExtensions)/lib/netstandard2.1/Harmony.PatchExtensions.dll" />
@@ -125,15 +106,9 @@
       <MonoModILHelpersDll Include="$(PkgMonoMod_ILHelpers)/lib/netstandard2.1/MonoMod.ILHelpers.dll" />
     </ItemGroup>
     
-    <Copy SourceFiles="@(HarmonyDll)"
-          DestinationFolder="$(OutputPath)"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(MonoModDll)"
-          DestinationFolder="$(OutputPath)"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(MonoModILHelpersDll)"
-          DestinationFolder="$(OutputPath)"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(HarmonyDll)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(MonoModDll)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(MonoModILHelpersDll)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
 </Project>
 

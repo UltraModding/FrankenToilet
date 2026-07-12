@@ -1,63 +1,68 @@
 ﻿using UnityEngine;
 using HarmonyLib;
 using UnityEngine.SceneManagement;
+using UnityEngine.AddressableAssets;
 using FrankenToilet.Core;
 using System;
 
 /*
  * This piece of code is responsible for the jumpscare on scene load.
  * I am not responcible for any possible heart attacks caused from this.
- * 
- * To be honest, I wanted to include more, however I got mentally exhausted
- * trying to figure out how to do this. This doesn't even work the intented way.
  */
 namespace FrankenToilet.alma;
+
 [EntryPoint]
-internal class InterruptSceneLoading : MonoBehaviour
+internal class InterruptSceneLoading
 {
+    static int chanceOfJumpscare = 15; //in percentage
+
     [EntryPoint]
-    public static void Awake()
+    private static void Start()
     {
-        LogHelper.LogInfo("[alma] Started");
         try
         {
             AssetBundle bundle = Functions.GetBundle("FrankenToilet.alma.scenes.bundle");
             AssetBundle assetsBundle = Functions.GetBundle("FrankenToilet.alma.assets.bundle");
+            string[] scenePaths = bundle.GetAllScenePaths();
+            string[] assetsNames = assetsBundle.GetAllAssetNames();
+            LogHelper.LogError(scenePaths);
+            LogHelper.LogError(assetsNames);
         }
         catch (Exception ex)
         {
-            LogHelper.LogError($"[alma] Failed to load the bundle:{ex}");
+            LogHelper.LogError($"Failed to load the bundle:{ex}");
         }
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-    
-    public static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (SceneHelper.CurrentScene != "Bootstrap")
-        {
-            try
-            {
-                Harmony.CreateAndPatchAll(typeof(InterruptSceneLoading));
-            } catch (Exception ex) { LogHelper.LogError(ex); }
-            
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-    }   
-}
 
-[PatchOnEntry]
-[HarmonyPatch(typeof(SceneHelper), nameof(SceneHelper.LoadScene))]
-public class PatchSceneHelperLoadScene
-{
-    public static bool Prefix()
+    [PatchOnEntry]
+    [HarmonyPatch(typeof(SceneHelper), nameof(SceneHelper.LoadScene))]
+    public class PatchSceneHelperLoadScene
     {
-        int percentage = new System.Random().Next(1,101);
-        if (percentage >= 90)
+        public static bool Prefix()
         {
-            LogHelper.LogInfo("[alma] Loading into 'fear' scene...");
-            SceneManager.LoadScene("fear");
-            return false;
+            int percentage = new System.Random().Next(1, 101);
+            if (percentage <= chanceOfJumpscare)
+            {
+                if (SceneHelper.CurrentScene != "Bootstrap")
+                {
+                    if (SceneHelper.CurrentScene != "Intro")
+                    {
+                        try
+                        {
+                            LogHelper.LogInfo("Loading into 'fear' scene...");
+                            Addressables.LoadAssetAsync<GameObject>("FirstRoom Player Only");
+                            SceneManager.LoadScene("fear");
+                            return false;
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError($"Failed to load the scene:{ex}");
+                            return true;
+                        }
+                    }
+                }
+            }
+            return true;
         }
-        return true;
     }
 }

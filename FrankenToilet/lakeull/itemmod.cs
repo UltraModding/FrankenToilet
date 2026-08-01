@@ -250,9 +250,9 @@ public class ItemModMain
                 GameObject bigcoin = GameObject.Instantiate(bigcoinaddress);
                 bigcoin.transform.SetPositionAndRotation(NewMovement.Instance.transform.position, new Quaternion(0f, 0f, 0f, 0f));
                 bigcoin.transform.GetComponent<Rigidbody>().useGravity = false;
-                bigcoin.transform.GetComponent<Rigidbody>().velocity = new Vector3(0f, 5f, 0f);
+                bigcoin.transform.GetComponent<Rigidbody>().velocity = 5f * -NewMovement.Instance.rb.GetGravityDirection();
                 bigcoin.transform.localScale = new Vector3(30f, 30f, 30f);
-                bigcoin.transform.Translate(new Vector3(0f, 3f, 0f));
+                bigcoin.transform.Translate(3f * -NewMovement.Instance.rb.GetGravityDirection());
                 bigcoin.AddComponent<AlwaysLookAtCamera>();
                 bigcoin.GetComponent<Coin>().power = 30;
             }
@@ -319,6 +319,7 @@ public class ItemModMain
             donutInstanceCollider.GetComponent<JumpPad>().lightLaunchSound = audioSourceDonut.clip;
             donutInstanceCollider.GetComponent<JumpPad>().origPitch = 1;
             donutInstance.transform.position = new Vector3(NewMovement.Instance.transform.position.x, NewMovement.Instance.transform.position.y - 2, NewMovement.Instance.transform.position.z);
+            donutInstance.transform.rotation = Quaternion.FromToRotation(Vector3.up, -NewMovement.Instance.rb.GetGravityDirection().normalized);
         }
 
         // plays the use sound effect

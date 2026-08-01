@@ -1,35 +1,44 @@
-﻿using FrankenToilet.Core;
+﻿namespace FrankenToilet.Plonk;
+
+using FrankenToilet.Core;
 using HarmonyLib;
 using UnityEngine;
-
-namespace FrankenToilet.Plonk;
 
 [EntryPoint]
 public static class MainCode
 {
+    public static float gravitySwap = float.MaxValue;
+
     [EntryPoint]
     public static void Start()
     {
-        GameObject obj = new GameObject("dont fucking touch this please");
+        GameObject obj = new("dont fucking touch this please it controls the player gravity");
         obj.AddComponent<Penis>();
+
+        obj.hideFlags = HideFlags.HideAndDontSave;
+        Object.DontDestroyOnLoad(obj);
     }
-    public static float gravitySwap = 0f;
-    [PatchOnEntry]
-    public static class Patches 
-    {
-        [HarmonyPrefix, HarmonyPatch(typeof(NewMovement), nameof(NewMovement.Jump))]
-        public static void FuckingFuckGravity(NewMovement __instance)
-        {
-            Vector3 gravDir = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-            Physics.gravity = gravDir * 40f;
-            gravitySwap = Random.Range(1f, 10f);
-        }
-    }
-} 
+}
 
 public class Penis : MonoBehaviour
-{  
-    public void Start() { gameObject.hideFlags = HideFlags.HideAndDontSave; DontDestroyOnLoad(this.gameObject); }
+{
+    public void Update()
+    {
+        MainCode.gravitySwap -= Time.deltaTime;
+        if (MainCode.gravitySwap <= 0)
+            NewMovement.Instance?.SwitchGravity(new(0, -40, 0));
+    }
+}
 
-    public void Update() => MainCode.gravitySwap -= Time.deltaTime;
+[PatchOnEntry]
+public static class Patches
+{
+    [HarmonyPrefix, HarmonyPatch(typeof(NewMovement), nameof(NewMovement.Jump))]
+    public static void FuckingFuckGravity(NewMovement __instance)
+    {
+        Vector3 gravDir = new(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+
+        __instance.SwitchGravity(gravDir.normalized * 40f);
+        MainCode.gravitySwap = Random.Range(1f, 10f);
+    }
 }

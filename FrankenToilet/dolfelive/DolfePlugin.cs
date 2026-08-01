@@ -1,6 +1,10 @@
-﻿﻿using FrankenToilet.Core;
-using HarmonyLib.PatchExtensions;
+﻿﻿using System;
+ 
+ using FrankenToilet.Core;
+ using HarmonyLib;
+ using HarmonyLib.PatchExtensions;
 using TMPro;
+using ULTRAKILL.Portal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,13 +26,15 @@ public class DolfePlugin
     public static GameObject textPrefab = null!;
     public static GameObject realSin = null!;
     public static AssetBundle bundle => BundleLoader.bundle;
-    
+    public static Sin? sinInstance = null;
     
     [EntryPoint]
     public static void Awake()
     {
         LogHelper.LogDebug("DolfePlugin Awake");
-        Application.runInBackground = true;
+        #if DEBUG
+        // Application.runInBackground = true;
+        #endif
         
         if (bundle == null)
         {
@@ -60,17 +66,34 @@ public class DolfePlugin
         }
         PrepareSin();
         
+        textPrefab = bundle.LoadAsset<GameObject>("Assets/Text (TMP).prefab");
+        textPrefab.GetComponent<TextMeshProUGUI>().fontSize = 24;
+        
+        GameObject container =
+            bundle.LoadAsset<GameObject>("Assets/CountdownContainer.prefab");
+        
+        AudioClip timeRunningOut = BundleLoader.bundle.LoadAsset<AudioClip>("Assets/timer_runout.wav");
+        
         SceneManager.sceneLoaded += (_, _) =>
         {
-            PatchClass.graceTime = 40f;
+            PatchClass.graceTime = 10f;
+            PatchClass.respawnSecondsOffset = 0f;
+            
+            StatsManager? sm = StatsManager.Instance;
+            if (sm == null)
+            {
+                LogHelper.LogError("StatsManager.Instance is null, skipping scene");
+                return;
+            }
+            
+            if (SceneHelper.CurrentScene == "Main Menu")
+            {
+                return;
+            }
+            
             Canvas? canvas = GameObject.Find("/Canvas")?.GetComponent<Canvas>();
             if (canvas != null)
             {
-                textPrefab = bundle.LoadAsset<GameObject>("Assets/Text (TMP).prefab");
-                textPrefab.GetComponent<TextMeshProUGUI>().fontSize = 24;
-                
-                GameObject container =
-                    bundle.LoadAsset<GameObject>("Assets/CountdownContainer.prefab");
                 containerInstance = GameObject.Instantiate(container, canvas.transform, false);
                 
                 RectTransform rt = containerInstance.GetComponent<RectTransform>();
@@ -88,19 +111,14 @@ public class DolfePlugin
                 countdown = containerInstance.AddComponent<DolfeCountdown>();
                 countdown.textPrefab = textPrefab.GetComponent<TextMeshProUGUI>();
                 countdown.container = containerInstance.transform;
-                countdown.timeRunOutClip = BundleLoader.bundle.LoadAsset<AudioClip>("Assets/timer_runout.wav");
-            }
-            
-            StatsManager sm = StatsManager.Instance;
-            if (sm != null)
-            {
-                sRankTime = sm.timeRanks[3];
-                countdown?.countingDown = sm.timer;
+                countdown.timeRunOutClip = timeRunningOut;
             }
             else
             {
-                LogHelper.LogError("StatsManager.Instance is null");
+                LogHelper.LogError("Canvas is missing");
             }
+            sRankTime = sm.timeRanks[3];
+            countdown?.countingDown = sm.timer;
         };
     }
     
@@ -113,7 +131,8 @@ public class DolfePlugin
         }
         realSin = GameObject.Instantiate(sinGO);
         realSin.transform.position = (NewMovement.instance?.transform.position ?? Vector3.zero) + new Vector3(0, 350f, 0);
-        realSin.GetComponent<Sin>().countdown = countdown;
+        sinInstance = realSin.GetComponent<Sin>();
+        sinInstance.countdown = countdown;
         
         // isn't working on all objects, so canceled
         // shaderApplier = new GameObject("ShaderApplier");
@@ -125,8 +144,10 @@ public class DolfePlugin
 [PatchOnEntry]
 public static class PatchClass
 {
-    public static float graceTime = 40f;
-    private const float lessTime = 0f; //115f 
+    public static float graceTime = 10f;
+    public static float maxGraceTime = 60f;
+    private const float lessTime = 180f; //0f; //115f 
+    public static float respawnSecondsOffset = 0f;
     
     #if DEBUG
     // [Patch(typeof(Bootstrap), "Start", AT.REDIRECT, "SceneHelper.LoadScene", occurrence: 3)]
@@ -145,20 +166,26 @@ public static class PatchClass
     [Patch(typeof(StatsManager), "Update", AT.RETURN)]
     public static void SecondsInc(float ___seconds)
     {
+        if (SceneHelper.CurrentScene != "uk_construct" && SceneHelper.CurrentScene != "Endless")
+            return;
+        
         if (DolfePlugin.countdown != null && !DolfePlugin.countdown._sinSpawned)
         {
-            // ReSharper disable once RedundantCast
-            DolfePlugin.countdown.timeLeft = ((float)(DolfePlugin.sRankTime - lessTime ?? 9999f) - ___seconds) + graceTime;
+            float secondsSinceNotDying = ___seconds - respawnSecondsOffset;
+            DolfePlugin.countdown.timeLeft = ((DolfePlugin.sRankTime ?? 9999f) - lessTime) - secondsSinceNotDying + graceTime;
         }
     }
     
     [Patch(typeof(StatsManager), "StartTimer", AT.RETURN)]
-    public static void StartTimerPatch(ref bool ___timer)
+    public static void StartTimerPatch(ref bool ___timer, float ___seconds)
     {
         if (SceneHelper.CurrentScene != "uk_construct" && SceneHelper.CurrentScene != "Endless")
         {
             DolfePlugin.countdown?.StartTimer();
             DolfePlugin.countdown?.countingDown = ___timer;
+            
+            // float secondsSinceNotDying = ___seconds - respawnSecondsOffset;
+            // LogHelper.LogDebug($"SRankTime: {DolfePlugin.sRankTime}, lessTime: {lessTime}, secondsSinceNotDying: {secondsSinceNotDying}, graceTime: {graceTime}");
         }
     }
     
@@ -167,6 +194,12 @@ public static class PatchClass
     {
         if (SceneHelper.CurrentScene != "uk_construct" && SceneHelper.CurrentScene != "Endless")
             DolfePlugin.countdown?.StopTimer();
+    }
+    
+    [Patch(typeof(StatsManager), "Restart", AT.RETURN)]
+    public static void SetRespawnOffset(float ___seconds)
+    {
+        respawnSecondsOffset = ___seconds;
     }
     
     [Patch(typeof(NewMovement), "Respawn", AT.RETURN)]
@@ -188,10 +221,27 @@ public static class PatchClass
         DolfePlugin.countdown.timeRunOutClip = BundleLoader.bundle.LoadAsset<AudioClip>("Assets/timer_runout.wav");
         DolfePlugin.countdown.countingDown = true;
         
-        GameObject.Destroy(DolfePlugin.realSin);
-        DolfePlugin.realSin = null!;
+        if (DolfePlugin.sinInstance != null)
+        {
+            if (DolfePlugin.sinInstance.disabledMusic)
+            {
+                MusicManager.Instance.StartMusic();
+            }
+            GameObject.Destroy(DolfePlugin.realSin);
+            DolfePlugin.realSin = null!;
+            DolfePlugin.sinInstance = null;
+        }
         
-        graceTime += 20f;
+        if (graceTime < maxGraceTime)
+            graceTime = MathF.Min(graceTime + 20f, maxGraceTime);
     }
     
+    [HarmonyPatch(typeof(NewMovement), nameof(NewMovement.OnTravel))]
+    static void Postfix(NewMovement __instance, PortalTravelDetails details)
+    {
+        Vector3 startPos = details.intersection;
+        Vector3 endPos = __instance.transform.position;
+        // Debug.Log($"Player teleported: {startPos}, {endPos}");
+        DolfePlugin.sinInstance?.OnTeleport(startPos, endPos);
+    }
 }

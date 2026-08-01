@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+// ReSharper disable UnnecessaryWhitespace
 
 namespace FrankenToilet.dolfelive;
 
 public sealed class Sin : MonoBehaviour
 {
+    public bool disabledMusic = false;
+    
     // Audio
     public AudioClip zenRelease = null!;
     public AudioClip actionsNBanger = null!;
-    public float audioDelay = 1.5f;
+    public float audioDelay = 0.75f;
 
     // Visuals
     public Image image = null!;
@@ -28,10 +31,18 @@ public sealed class Sin : MonoBehaviour
     private Transform trailParent = null!;
 
     // Follow
-    public float baseFollowSpeed = 50f;
-    public float speedMultiplier = 1.01f;
+    public float baseFollowSpeed = 60f;
+    public float speedMultiplier = 1.02f;
     public float recordInterval = 0.1f;
-    private Queue<Vector3> pathPoints = new Queue<Vector3>();
+    
+    struct PathEvent
+    {
+        public Vector3 position;
+        public bool isPortal;
+        public Vector3 portalDest;
+    }
+    
+    private Queue<PathEvent> pathPoints = new Queue<PathEvent>();
     private float lastRecordTime;
 
     // Circle motion
@@ -52,15 +63,17 @@ public sealed class Sin : MonoBehaviour
 
     // refs
     private AudioSource _audioSource = null!;
+    private AudioSource _musicSource = null!;
     private Transform? cam => NewMovement.instance?.cc?.cam.transform;
 
     // Animation state
     private int _index;
     private float _timer;
-
-
+    
     void Start()
     {
+        Camera.main.useOcclusionCulling = false;
+        
         trailParent = Instantiate(new GameObject("trailParent")).transform;
 
         if (frames.Length > 0) image.sprite = frames[0];
@@ -68,22 +81,42 @@ public sealed class Sin : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _audioSource.volume = PrefsManager.Instance.GetFloat("allVolume");
 
+        GameObject musicPlayerGO = new GameObject("Music player");
+        musicPlayerGO.transform.parent = this.transform;
+        _musicSource = musicPlayerGO.AddComponent<AudioSource>();
+        _musicSource.volume = PrefsManager.Instance.GetFloat("musicVolume");
+        _musicSource.clip = actionsNBanger;
+        
         AudioSource[] audioChildren = transform.Find("AudioSources").GetComponents<AudioSource>();
         foreach (AudioSource child in audioChildren)
         {
             child.maxDistance *= 1.2f;
             child.volume = PrefsManager.Instance.GetFloat("allVolume");
+            
+            if (child.clip.name == "sinBells")
+            {
+                child.maxDistance = 15;
+            }
+            
+            if (child.clip.name == "sinHORN")
+            {
+                child.volume *= 1.5f; 
+            }
         }
-
+        _musicSource.loop = true;
+        
         StartCoroutine(playSounds());
         StartCoroutine(SpawnCircles());
     }
-
+    
     IEnumerator playSounds()
     {
-        _audioSource.PlayOneShot(zenRelease);
+        disabledMusic = true;
+        MusicManager.Instance.FadeOut(1f);
+        _audioSource.PlayOneShot(zenRelease, tracked: true);
         yield return new WaitForSeconds(audioDelay);
-        _audioSource.PlayOneShot(actionsNBanger);
+        _musicSource.Play(tracked: true);
+        
     }
 
     IEnumerator SpawnCircles()
@@ -91,14 +124,16 @@ public sealed class Sin : MonoBehaviour
         Vector3 startPos = transform.position;
         float angle = 0f;
         int circlesCompleted = 0;
-
+        float startTime = Time.time;
+        
         while (circlesCompleted < 9)
         {
             float x = Mathf.Cos(angle) * circleRadius;
             float z = Mathf.Sin(angle) * circleRadius;
-
-            float y = startPos.y - (descentSpeed * Time.time);
-
+            
+            float elapsed = Time.time - startTime;
+            float y = startPos.y - (descentSpeed * elapsed);
+            
             transform.position = new Vector3(startPos.x + x, y, startPos.z + z);
 
             angle += circleSpeed * Time.deltaTime;
@@ -145,21 +180,35 @@ public sealed class Sin : MonoBehaviour
             }
             GameObject trail = Instantiate(trailPrefab, trailOrigin + randomPosOffset, Quaternion.identity, trailParent);
             SinTrail sTrail = trail.AddComponent<SinTrail>();
+            sTrail.GetComponent<Renderer>().material.renderQueue = 3999;
             sTrail.duration = trailDuration;
             sTrail.trailSizeRange = trailSizeRange;
             Destroy(trail, trailDuration);
         }
     }
-
+    
+    public void OnTeleport(Vector3 StartPos, Vector3 EndPos)
+    {
+        PathEvent pEvent = new();
+        pEvent.position = StartPos;
+        pEvent.isPortal = true;
+        pEvent.portalDest = EndPos;
+        pathPoints.Enqueue(pEvent);
+    }
+    
     void RecordCameraPath()
     {
         if (Time.time - lastRecordTime >= recordInterval)
         {
-            pathPoints.Enqueue(cam!.position);
+            PathEvent pEvent = new();
+            pEvent.position = cam!.position;
+            pathPoints.Enqueue(pEvent);
             lastRecordTime = Time.time;
-
+            
             if (pathPoints.Count > 100)
-                pathPoints.Dequeue();
+            {
+                PathEvent pe = pathPoints.Dequeue();
+            }
         }
     }
 
@@ -173,7 +222,7 @@ public sealed class Sin : MonoBehaviour
             SHUTUP();
             playerKilled = true;
         }
-
+        
         Vector3 targetPoint;
         if (distanceToCam < 10f)
         {
@@ -181,9 +230,9 @@ public sealed class Sin : MonoBehaviour
         }
         else
         {
-            targetPoint = pathPoints.Peek();
+            targetPoint = pathPoints.Peek().position;
         }
-        countdown?.timeLeft = distanceToCam;
+        countdown?.timeLeft = distanceToCam - 3f;
 
         float dynamicSpeed = baseFollowSpeed + ((distanceToCam > 60f ? distanceToCam - 60f : 0f) * speedMultiplier);
 
@@ -192,7 +241,9 @@ public sealed class Sin : MonoBehaviour
 
         if (Vector3.Distance(transform.position, targetPoint) < 2f)
         {
-            pathPoints.Dequeue();
+            PathEvent current = pathPoints.Dequeue();
+            if (current.isPortal)
+                transform.position = current.portalDest;
         }
     }
 
@@ -222,6 +273,7 @@ public sealed class Sin : MonoBehaviour
 
     void SHUTUP()
     {
+        // return;
         AudioSource[] audioChildren = this.transform.Find("AudioSources").GetComponents<AudioSource>();
         foreach (AudioSource child in audioChildren)
         {

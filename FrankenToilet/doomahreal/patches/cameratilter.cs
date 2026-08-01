@@ -31,7 +31,7 @@ public static class headspin
 {
     private static int _evilStartCounter = 0;
 
-    [HarmonyPatch(typeof(CameraController), "Update")]
+    [HarmonyPatch(typeof(CameraController), "LateUpdate")]
     [HarmonyPostfix]
     static void Postfix(CameraController __instance)
     {

@@ -24,6 +24,53 @@
   <Import Project="Properties/DeployToPlugins.targets" />
   <Import Project="Properties/DevMode.targets" />
   <ItemGroup>
+    <Compile Remove="Core\EventsManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="alma\assets.bundle" />
+    <None Remove="alma\scenes.bundle" />
+    <None Remove="Bananastudio\frankentoiletbundle" />
+    <None Remove="Bananastudio\gazimages" />
+    <None Remove="Bananastudio\videoclips" />
+    <None Remove="BlaixenU\assetblaixundle" />
+    <None Remove="BlaixenU\BlaixenU" />
+    <None Remove="bobthecorn\ultraclicker_assets_all.bundle" />
+    <None Remove="Bryan\fuckyou.bundle" />
+    <None Remove="dolfelive\dolfe.bundle" />
+    <None Remove="doomahreal\veryuniqueassetsnametrust.bundle" />
+    <None Remove="duviz\meow.bundle" />
+    <None Remove="earthling\toiletonfire.bundle" />
+    <None Remove="flazhik\ultrakill_sa.bundle" />
+    <None Remove="greycsont\assetstealfromrhythmgame.bundle" />
+    <None Remove="lakeull\lakeullsfunnybundle" />
+    <None Remove="mercy\assets.bundle" />
+    <None Remove="prideunique\aizoaizo" />
+    <None Remove="somebilly\assets.bundle" />
+    <None Remove="triggeredidiot\assets.bundle" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="alma\assets.bundle" />
+    <EmbeddedResource Include="alma\scenes.bundle" />
+    <EmbeddedResource Include="Bananastudio\frankentoiletbundle" />
+    <EmbeddedResource Include="Bananastudio\gazimages" />
+    <EmbeddedResource Include="Bananastudio\videoclips" />
+    <EmbeddedResource Include="BlaixenU\assetblaixundle" />
+    <EmbeddedResource Include="BlaixenU\BlaixenU" />
+    <EmbeddedResource Include="bobthecorn\ultraclicker_assets_all.bundle" />
+    <EmbeddedResource Include="Bryan\fuckyou.bundle" />
+    <EmbeddedResource Include="dolfelive\dolfe.bundle" />
+    <EmbeddedResource Include="doomahreal\veryuniqueassetsnametrust.bundle" />
+    <EmbeddedResource Include="duviz\meow.bundle" />
+    <EmbeddedResource Include="earthling\toiletonfire.bundle" />
+    <EmbeddedResource Include="flazhik\ultrakill_sa.bundle" />
+    <EmbeddedResource Include="greycsont\assetstealfromrhythmgame.bundle" />
+    <EmbeddedResource Include="lakeull\lakeullsfunnybundle" />
+    <EmbeddedResource Include="mercy\assets.bundle" />
+    <EmbeddedResource Include="prideunique\aizoaizo" />
+    <EmbeddedResource Include="somebilly\assets.bundle" />
+    <EmbeddedResource Include="triggeredidiot\assets.bundle" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
@@ -84,48 +131,8 @@
       <Private>false</Private>
       <CopyLocal>false</CopyLocal>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(UltrakillDir)ULTRAKILL_Data/Managed/UnityEngine.UI.dll</HintPath>
-      <Private>false</Private>
-      <CopyLocal>false</CopyLocal>
-    </Reference>
-    
+	
     <Publicize Include="Assembly-CSharp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="alma\assets.bundle" />
-    <None Remove="alma\scenes.bundle" />
-    <None Remove="Bananastudio\frankentoiletbundle" />
-    <None Remove="Bananastudio\gazimages" />
-    <None Remove="Bananastudio\videoclips" />
-    <None Remove="doomahreal\veryuniqueassetsnametrust.bundle" />
-    <None Remove="dolfelive\dolfe.bundle" />
-    <None Remove="triggeredidiot\assets.bundle" />
-    <None Remove="greycsont\assetstealfromrhythmgame.bundle" />
-    <None Remove="earthling\toiletonfire.bundle" />
-    <None Remove="lakeull\lakeullsfunnybundle" />
-    <None Remove="prideunique\aizoaizo" />
-    <None Remove="mercy\assets.bundle" />
-    <EmbeddedResource Include="alma\assets.bundle" />
-    <EmbeddedResource Include="alma\scenes.bundle" />
-    <EmbeddedResource Include="Bananastudio\frankentoiletbundle" />
-    <EmbeddedResource Include="Bananastudio\gazimages" />
-    <EmbeddedResource Include="Bananastudio\videoclips" />
-    <EmbeddedResource Include="doomahreal\veryuniqueassetsnametrust.bundle" />
-    <EmbeddedResource Include="duviz\meow.bundle" />
-    <EmbeddedResource Include="triggeredidiot\assets.bundle" />
-    <EmbeddedResource Include="greycsont\assetstealfromrhythmgame.bundle" />
-    <EmbeddedResource Include="earthling\toiletonfire.bundle" />
-    <EmbeddedResource Include="lakeull\lakeullsfunnybundle" />
-    <EmbeddedResource Include="Bryan\fuckyou.bundle" />
-    <EmbeddedResource Include="dolfelive\dolfe.bundle" />
-    <EmbeddedResource Include="prideunique\aizoaizo" />
-    <EmbeddedResource Include="BlaixenU\assetblaixundle" />
-    <EmbeddedResource Include="flazhik\ultrakill_sa.bundle" />
-    <EmbeddedResource Include="bobthecorn\ultraclicker_assets_all.bundle" />
-    <EmbeddedResource Include="somebilly\assets.bundle" />
-    <EmbeddedResource Include="mercy\assets.bundle" />
   </ItemGroup>
 
   <Target Name="CopyHarmonyExtensionDeps" AfterTargets="Build">

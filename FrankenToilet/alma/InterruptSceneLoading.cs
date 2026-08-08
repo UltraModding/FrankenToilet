@@ -15,7 +15,7 @@ namespace FrankenToilet.alma;
 [EntryPoint]
 internal static class InterruptSceneLoading
 {
-    private static readonly int chanceOfJumpscare = 99; // in percentage
+    private static readonly int chanceOfJumpscare = 15; // in percentage
 
     [EntryPoint]
     private static void Start()

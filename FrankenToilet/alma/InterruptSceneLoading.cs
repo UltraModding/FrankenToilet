@@ -2,7 +2,6 @@
 using FrankenToilet.Core;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using Random = System.Random;
 
@@ -38,7 +37,7 @@ internal static class InterruptSceneLoading
         public static bool Prefix()
         {
             var percentage = new Random().Next(1, 101);
-            if (percentage <= chanceOfJumpscare)
+            if (percentage <= chanceOfJumpscare && SceneHelper.CurrentScene != "Tutorial")
                 if (SceneHelper.CurrentScene != "Bootstrap" && SceneHelper.CurrentScene != "Intro")
                     try
                     {

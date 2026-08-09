@@ -1,32 +1,28 @@
-﻿using UnityEngine;
-using HarmonyLib;
-using UnityEngine.SceneManagement;
-using UnityEngine.AddressableAssets;
+﻿using System;
 using FrankenToilet.Core;
-using System;
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 /*
  * This piece of code is responsible for the jumpscare on scene load.
- * I am not responcible for any possible heart attacks caused from this.
+ * I am not responsible for any possible heart attacks caused from this.
  */
 namespace FrankenToilet.alma;
 
 [EntryPoint]
-internal class InterruptSceneLoading
+internal static class InterruptSceneLoading
 {
-    static int chanceOfJumpscare = 15; //in percentage
+    private static readonly int chanceOfJumpscare = 15; // in percentage
 
     [EntryPoint]
     private static void Start()
     {
         try
         {
-            AssetBundle bundle = Functions.GetBundle("FrankenToilet.alma.scenes.bundle");
-            AssetBundle assetsBundle = Functions.GetBundle("FrankenToilet.alma.assets.bundle");
-            string[] scenePaths = bundle.GetAllScenePaths();
-            string[] assetsNames = assetsBundle.GetAllAssetNames();
-            LogHelper.LogError(scenePaths);
-            LogHelper.LogError(assetsNames);
+            Functions.GetBundle("FrankenToilet.alma.scenes.bundle");
+            Functions.GetBundle("FrankenToilet.alma.assets.bundle");
         }
         catch (Exception ex)
         {
@@ -40,28 +36,22 @@ internal class InterruptSceneLoading
     {
         public static bool Prefix()
         {
-            int percentage = new System.Random().Next(1, 101);
-            if (percentage <= chanceOfJumpscare)
-            {
-                if (SceneHelper.CurrentScene != "Bootstrap")
-                {
-                    if (SceneHelper.CurrentScene != "Intro")
+            var percentage = new Random().Next(1, 101);
+            if (percentage <= chanceOfJumpscare && SceneHelper.CurrentScene != "Tutorial")
+                if (SceneHelper.CurrentScene != "Bootstrap" && SceneHelper.CurrentScene != "Intro")
+                    try
                     {
-                        try
-                        {
-                            LogHelper.LogInfo("Loading into 'fear' scene...");
-                            Addressables.LoadAssetAsync<GameObject>("FirstRoom Player Only");
-                            SceneManager.LoadScene("fear");
-                            return false;
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.LogError($"Failed to load the scene:{ex}");
-                            return true;
-                        }
+                        LogHelper.LogInfo("Loading into 'fear' scene...");
+                        Addressables.LoadAssetAsync<GameObject>("FirstRoom Player Only");
+                        SceneManager.LoadScene("fear");
+                        return false;
                     }
-                }
-            }
+                    catch (Exception ex)
+                    {
+                        LogHelper.LogError($"Failed to load the scene:{ex}");
+                        return true;
+                    }
+
             return true;
         }
     }
